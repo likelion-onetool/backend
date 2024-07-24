@@ -3,6 +3,7 @@ package com.onetool.server.member;
 import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.qna.QnaBoard;
+import com.onetool.server.qna.QnaReply;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -55,6 +56,11 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<QnaBoard> qnaBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<QnaReply> qnaReplies = new ArrayList<>();
+
+
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
