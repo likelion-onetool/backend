@@ -3,9 +3,9 @@ package com.onetool.server.qna.dto.request;
 import jakarta.validation.constraints.Size;
 
 
-public class QnaRequest {
+public class QnaBoardRequest {
 
-    public static record PostQnaBoard(
+    public record PostQnaBoard(
             @Size(min = 2, max = 30, message = "제목은 2 ~ 30자 이여야 합니다.")
             String title,
             @Size(min = 2, max = 100, message = "내용은 2 ~ 100자 이여야 합니다.")

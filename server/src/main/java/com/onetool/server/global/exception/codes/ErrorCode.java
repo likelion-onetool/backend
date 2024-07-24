@@ -62,6 +62,15 @@ public enum ErrorCode implements BaseCode {
     NOT_VALID_HEADER_ERROR(HttpStatus.NOT_FOUND, "G012", "Header에 데이터가 존재하지 않는 경우 "),
 
     // 4xx : client error
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
+
+    //유저 에러
+    NON_AUTHORIZED_USER(HttpStatus.FORBIDDEN, "MEMBER-0000", "로그인을 해주세요."),
+    NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
+    EXIST_EMAIL(HttpStatus.BAD_REQUEST, "MEMBER-0002", "이미 존재하는 회원입니다."),
+
+
+
 
     //자잘한 에러
     SEARCH_KEYWORD_TOO_SHORT(HttpStatus.BAD_REQUEST, "KEYWORD-0000", "검색어는 3글자부터 입력하세요."),
@@ -70,17 +79,13 @@ public enum ErrorCode implements BaseCode {
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
 
     //로그인 에러
-    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "LOGIN-0001", "이메일이 잘못됨"),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
-    EXIST_EMAIL(HttpStatus.BAD_REQUEST, "COMMON-0002", "이미 존재하는 회원입니다."),
+    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "LOGIN-0000", "이메일이 잘못됐습니다."),
 
 
     //Qna 에러
-    NO_QNA(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
-    /*
-    *
-    *
-    * */
+    NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
+    NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
 
     // 5xx : server error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러");
