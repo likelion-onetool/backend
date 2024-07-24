@@ -5,6 +5,9 @@ import com.onetool.server.global.auth.CustomAccessDeniedHandler;
 import com.onetool.server.global.auth.CustomAuthenticationEntryPoint;
 import com.onetool.server.global.auth.filter.JwtAuthFilter;
 import com.onetool.server.global.auth.jwt.JwtUtil;
+import com.onetool.server.global.oauth2.handler.OAuth2LoginFailureHandler;
+import com.onetool.server.global.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.onetool.server.global.oauth2.service.CustomOAuth2UserService;
 import com.onetool.server.member.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +31,13 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     private static final String[] AUTH_WHITELIST = {
-        "/users/login/**"
+        "/users/login/**", "/login/**",
+            "/users/signup/**"
     };
 
     @Bean
@@ -51,7 +58,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
-                .oauth2Login(Customizer.withDefaults());
+                .oauth2Login(auth -> {
+                    auth.successHandler(oAuth2LoginSuccessHandler)
+                            .failureHandler(oAuth2LoginFailureHandler)
+                            .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService));
+                });
 
         return http.build();
     }

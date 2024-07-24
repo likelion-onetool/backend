@@ -35,7 +35,6 @@ public class JwtUtil implements AuthorizationProvider {
     @Override
     public String create(MemberAuthContext context) {
         Claims claims = Jwts.claims();
-        claims.put("memberId", context.getId());
         claims.put("email", context.getEmail());
         claims.put("role", context.getRole());
 

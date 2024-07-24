@@ -10,4 +10,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query(value = "SELECT count(*) FROM Member")
     Long countAllMember();
+
+    Optional<Member> findBySocialTypeAndSocialId(SocialType socialType, String id);
 }
