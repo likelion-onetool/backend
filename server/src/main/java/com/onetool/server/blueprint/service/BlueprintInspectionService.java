@@ -25,12 +25,17 @@ public class BlueprintInspectionService {
         List<Blueprint> blueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE);
 
         return blueprints.stream()
-                .map(BlueprintResponse::fromEntity)
+                .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void approveBlueprint(Long id) {
         blueprintRepository.findById(id).ifPresent(Blueprint::approveBlueprint);
+    }
+
+    @Transactional
+    public void rejectBlueprint(Long id) {
+        blueprintRepository.deleteById(id);
     }
 }
