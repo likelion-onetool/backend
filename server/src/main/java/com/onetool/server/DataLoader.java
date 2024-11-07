@@ -4,8 +4,12 @@ import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.blueprint.repository.BlueprintRepository;
 import com.onetool.server.category.FirstCategory;
 import com.onetool.server.category.FirstCategoryRepository;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.enums.UserRole;
+import com.onetool.server.member.repository.MemberRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Profile("default")
@@ -14,14 +18,29 @@ public class DataLoader implements CommandLineRunner {
 
     private final FirstCategoryRepository firstCategoryRepository;
     private final BlueprintRepository blueprintRepository;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository) {
+    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public void run(String... args) throws Exception {
+
+        Member member = memberRepository.save(
+                Member.builder()
+                        .name("관리자1")
+                        .password(passwordEncoder.encode("1234"))
+                        .email("admin@admin.com")
+                        .role(UserRole.ROLE_ADMIN)
+                        .build()
+        );
+
         final FirstCategory firstCategory1 = firstCategoryRepository.save(
                 FirstCategory.builder()
                         .id(1L)

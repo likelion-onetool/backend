@@ -4,16 +4,20 @@ import com.onetool.server.blueprint.service.BlueprintInspectionService;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class BlueprintInspectionTest {
 
@@ -38,6 +42,11 @@ public class BlueprintInspectionTest {
         assertThat(
                 blueprintInspectionService.findAllNotPassedBlueprints().size()
         ).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("관리자 회원만 인터셉터를 통과하여 /damin/* 경로에 접근이 가능하다.")
+    void test_admin_interceptor() {
 
     }
 }
