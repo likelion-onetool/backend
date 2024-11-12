@@ -25,7 +25,7 @@ public class BlueprintInspectionService {
         List<Blueprint> blueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE);
 
         return blueprints.stream()
-                .map(BlueprintResponse::fromEntity)
+                .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
     }
 

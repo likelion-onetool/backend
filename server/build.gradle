@@ -58,6 +58,10 @@ dependencies {
 	implementation 'com.sun.mail:smtp:2.0.1'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 tasks.named('test') {

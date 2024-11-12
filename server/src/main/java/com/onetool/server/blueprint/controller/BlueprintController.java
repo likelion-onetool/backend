@@ -33,7 +33,7 @@ public class BlueprintController {
 
     @GetMapping("/{id}")
     public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable Long id) {
-        BlueprintResponse blueprintResponseDTO = blueprintService.findBlueprintById(id);
+        BlueprintResponse blueprintResponseDTO = blueprintService.findApprovedBlueprintById(id);
         return ApiResponse.onSuccess(blueprintResponseDTO);
     }
 
