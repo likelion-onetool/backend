@@ -1,39 +1,32 @@
 package com.onetool.server.blueprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetool.server.blueprint.controller.BlueprintController;
-import com.onetool.server.blueprint.dto.SearchResponse;
-import com.onetool.server.blueprint.service.BlueprintService;
-import com.onetool.server.blueprint.dto.BlueprintRequest;
-import com.onetool.server.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.controller.BlueprintController;
+import com.onetool.server.api.blueprint.service.BlueprintService;
+import com.onetool.server.api.blueprint.dto.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.BlueprintResponse;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.member.controller.MemberController;
-import com.onetool.server.member.enums.UserRole;
-import com.onetool.server.member.service.MemberService;
-import org.apache.catalina.User;
+import com.onetool.server.api.member.controller.MemberController;
+import com.onetool.server.api.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,6 +44,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 @WebMvcTest({BlueprintController.class, MemberController.class})
 @AutoConfigureMockMvc

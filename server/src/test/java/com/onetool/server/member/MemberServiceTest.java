@@ -1,16 +1,13 @@
 package com.onetool.server.member;
 
-import com.onetool.server.member.dto.MemberCreateResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -69,29 +66,29 @@ public class MemberServiceTest {
                 "isNative", true
         );
 
-        // when
-        final ExtractableResponse<Response> signupResponse = RestAssured.given().log().all()
+        // 회원가입
+        RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/users/signup")
-                .then().log().all()
-                .extract();
+                .then().log().all();
 
-        final long userId = Long.parseLong(signupResponse.path("result.id").toString());
-
+        // 로그인 후 토큰 가져오기
         String token = loginAndReturnToken();
 
+        // when
         final ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
                 .header("Authorization", "Bearer " + token)
-                .when().delete("/users/" + userId)
+                .when().delete("/users")
                 .then().log().all()
                 .extract();
 
         // then
         final JsonPath result = deleteResponse.jsonPath();
-        String message = result.getString("message");
+        String message = result.getString("result");
         assertThat(message).isEqualTo("회원 탈퇴가 완료되었습니다.");
     }
+
 
     @Test
     @DisplayName("로그인 후 회원 정보 조회 성공 테스트")
