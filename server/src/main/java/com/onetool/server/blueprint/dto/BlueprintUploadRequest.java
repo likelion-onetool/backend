@@ -7,7 +7,6 @@ public record BlueprintUploadRequest(
         String blueprintName,
         Long categoryId,
         Long standardPrice,
-        String blueprintImg,
         String blueprintDetails,
         String extension,
         String program,
