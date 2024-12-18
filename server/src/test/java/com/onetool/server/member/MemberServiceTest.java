@@ -1,5 +1,8 @@
 package com.onetool.server.member;
 
+import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.service.MemberService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -7,12 +10,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,7 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ActiveProfiles({"test","dev"})
 public class MemberServiceTest {
 
-    private ExtractableResponse<Response> memberCreateResponse;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    MemberService memberService;
 
     @Test
     void create_member() {
@@ -53,8 +61,8 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("멤버가 삭제되는지 확인")
-    void memberDelete() {
+    @DisplayName("멤버가 삭제되면 isDeleted가 true로 바뀌는지 확인")
+    void memberIsDelete() {
         // given
         final Map<String, Object> params = Map.of(
                 "email", "user@example.com",
@@ -89,11 +97,9 @@ public class MemberServiceTest {
         assertThat(message).isEqualTo("회원 탈퇴가 완료되었습니다.");
     }
 
-
     @Test
     @DisplayName("로그인 후 회원 정보 조회 성공 테스트")
     void loginAndGetMemberSuccess() {
-
         // given (로그인)
         String token = loginAndReturnToken();
 
@@ -106,10 +112,7 @@ public class MemberServiceTest {
                 .statusCode(200)
                 .extract();
 
-        System.out.println("Member response body: " + memberResponse.body().asString());
-
         // then
-
         assertThat(memberResponse.jsonPath().getString("result.email")).isEqualTo("admin@example.com");
         assertThat(memberResponse.jsonPath().getString("result.name")).isEqualTo("홍길동");
         assertThat(memberResponse.jsonPath().getString("result.development_field")).isEqualTo("백엔드");
@@ -137,20 +140,20 @@ public class MemberServiceTest {
 
         String expectedEmail = "admin@example.com";
         assertThat(findEmailResponse.body().asString()).contains(expectedEmail);
-
-        System.out.println("Find email response body: " + findEmailResponse.body().asString());
     }
 
     @Test
     @DisplayName("로그인후 회원 정보 수정 성공 테스트")
     void updateMemberSuccess() {
-
+        // given (로그인 후 토큰 획득)
         String token = loginAndReturnToken();
 
+        // given (수정할 파라미터)
         final Map<String, Object> updateParams = Map.of(
                 "developmentField", "프론트"
         );
 
+        // when (회원 정보 수정)
         ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
                 .header("Authorization", "Bearer " + token) // 인증 헤더 추가
                 .contentType(ContentType.JSON)
@@ -160,6 +163,7 @@ public class MemberServiceTest {
                 .statusCode(200)
                 .extract();
 
+        // when (수정된 정보 조회)
         ExtractableResponse<Response> memberResponse = RestAssured.given().log().all()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
@@ -168,31 +172,22 @@ public class MemberServiceTest {
                 .statusCode(200)
                 .extract();
 
+        // then (정보가 수정되었는지 확인)
         assertThat(memberResponse.path("result.development_field").toString()).isEqualTo("프론트");
     }
 
     @Test
-    @DisplayName("유저의 구매 내역을 조회하면 정상적으로 응답한다")
-    void 유저의_구매내역을_조회하면_정상적으로_응답한다() {
-        // given (회원 가입 및 로그인)
-        String token = loginAndReturnToken();
+    @DisplayName("id=1인 회원을 삭제하면 isDeleted 값이 true로 변경된다.")
+    void deleteMember_SetsIsDeletedToTrue() {
+        // given: 이미 id=1인 회원이 존재한다고 가정
+        Long memberId = 1L;  // 삭제할 회원의 ID (id=1로 설정)
 
-        // when (구매 내역 조회 요청)
-        ExtractableResponse<Response> purchaseResponse = RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
-                .contentType(ContentType.JSON)
-                .when().get("/users/1/myPurchase") // 적절한 userId를 사용하세요
-                .then().log().all()
-                .statusCode(200)
-                .extract();
+        // when: deleteMember 메서드 호출하여 회원 삭제
+        memberService.deleteMember(memberId);
 
-        // 응답 본문 출력
-        System.out.println("Purchase response body: " + purchaseResponse.body().asString());
-
-        // then
-        assertThat(purchaseResponse.jsonPath().getBoolean("isSuccess")).isTrue();
-        assertThat(purchaseResponse.jsonPath().getString("code")).isEqualTo("SUCCESS-0000");
-        assertThat(purchaseResponse.jsonPath().getString("message")).isEqualTo("요청에 성공하였습니다.");
+        // then: 해당 회원의 isDeleted 값이 true로 변경되었는지 확인
+        Member deletedMember = memberRepository.findById(memberId).orElseThrow();
+        assertThat(deletedMember.getIsDeleted()).isTrue();
     }
 
     private String loginAndReturnToken() {

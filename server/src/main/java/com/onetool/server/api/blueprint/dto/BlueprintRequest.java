@@ -19,7 +19,8 @@ public record BlueprintRequest(
         Long salePrice,
         LocalDateTime saleExpiredDate,
         String creatorName,
-        String downloadLink
+        String downloadLink,
+        boolean isDeleted
 )  {
     @Builder
     public static BlueprintRequest from(Blueprint blueprint) {
@@ -36,7 +37,8 @@ public record BlueprintRequest(
                 blueprint.getSalePrice(),
                 blueprint.getSaleExpiredDate(),
                 blueprint.getCreatorName(),
-                blueprint.getDownloadLink()
+                blueprint.getDownloadLink(),
+                blueprint.getIsDeleted()
         );
     }
 }

@@ -11,6 +11,7 @@ import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
 import com.onetool.server.global.exception.InvalidSortTypeException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,10 +49,12 @@ public class BlueprintService {
         return BlueprintResponse.from(blueprint);
     }
 
+    @Transactional
     public Blueprint saveBlueprint(Blueprint blueprint) {
         return blueprintRepository.save(blueprint);
     }
 
+    @Transactional
     public boolean updateBlueprint(BlueprintResponse blueprintResponse) {
         Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
                 .orElseThrow(BlueprintNotFoundException::new);
@@ -61,8 +64,12 @@ public class BlueprintService {
         return true;
     }
 
+    @Transactional
     public boolean deleteBlueprint(Long id) {
-        blueprintRepository.deleteById(id);
+        Blueprint blueprint = blueprintRepository.findById(id)
+                .orElseThrow(BlueprintNotFoundException::new);
+
+        blueprintRepository.delete(blueprint);
         return true;
     }
 

@@ -22,22 +22,6 @@ public record MemberInfoResponse(
         LocalDate user_registered_at,
         List<OrderResponse.OrderCompleteResponseDto> orderCompleteResponseDtos
 ) {
-    @Builder
-    public MemberInfoResponse(Long id, String email, String password, String name, @Past LocalDate birthDate, String development_field, String phoneNum, boolean isNative, boolean service_accept, LocalDate user_registered_at, List<OrderResponse.OrderCompleteResponseDto> orderCompleteResponseDtos) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.development_field = development_field;
-        this.phoneNum = phoneNum;
-        this.isNative = isNative;
-        this.service_accept = service_accept;
-        this.user_registered_at = user_registered_at;
-        this.orderCompleteResponseDtos = orderCompleteResponseDtos;
-    }
-
-
     public static MemberInfoResponse from(Member member) {
         return new MemberInfoResponse(
                 member.getId(),

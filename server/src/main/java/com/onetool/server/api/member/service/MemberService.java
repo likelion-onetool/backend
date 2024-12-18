@@ -12,11 +12,12 @@ import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.api.mail.MailService;
-import com.onetool.server.api.member.dto.*;
+
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.qna.QnaBoard;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -152,6 +153,7 @@ public class MemberService {
         return true;
     }
 
+    @Transactional
     public Member updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(MemberNotFoundException::new);
@@ -161,9 +163,11 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(MemberNotFoundException::new);
+
         memberRepository.delete(member);
     }
 
