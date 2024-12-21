@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
 public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,8 +83,11 @@ public class Member extends BaseEntity {
     @Column(name = "user_registered_at")
     private LocalDate user_registered_at;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @Builder
-    public Member(Long id, String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, SocialType socialType, String socialId, List<QnaBoard> qnaBoards, List<QnaReply> qnaReplies, Cart cart) {
+    public Member(Long id, String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, SocialType socialType, String socialId, List<QnaBoard> qnaBoards, List<QnaReply> qnaReplies, Cart cart, boolean isDeleted) {
         this.id = id;
         this.password = password;
         this.email = email;
@@ -100,6 +104,7 @@ public class Member extends BaseEntity {
         this.qnaBoards = qnaBoards;
         this.qnaReplies = qnaReplies;
         this.cart = cart != null ? cart : Cart.createCart(this);
+        this.isDeleted = isDeleted;
     }
 
     public Member updateWith(MemberUpdateRequest request) {
@@ -115,15 +120,7 @@ public class Member extends BaseEntity {
         return this;
     }
 
-    public void updatePassword(String newPassword, PasswordEncoder encoder) {
-        this.password = encoder.encode(newPassword);
-    }
-
-    public void initCart(Cart cart) {
-        this.cart = cart;
-    }
-    @PrePersist
-    protected void onCreate() {
-        this.user_registered_at = LocalDate.now();
+    public boolean getIsDeleted() {
+        return isDeleted;
     }
 }
