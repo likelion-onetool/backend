@@ -1,51 +1,45 @@
 package com.onetool.server.blueprint.controller;
 
+import com.onetool.server.blueprint.dto.BlueprintUploadRequest;
 import com.onetool.server.blueprint.service.BlueprintS3UploadService;
+import com.onetool.server.blueprint.service.S3Service;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/blueprint/upload")
 public class BlueprintUploadController {
 
     private final BlueprintS3UploadService blueprintS3UploadService;
+    private final S3Service s3service;
 
-    // TODO : validation 추가 (팀원들과 협의 후 결정)
     // 일단 유저 인증은 생략하고 업로드 기능만 구현
+    // 현재 파일을 서버에 업로드하는 방식과 클라이언트에서 업로드 (서버에서 presigned-url 발급)하는 방법 2가지를 구현
+    // 어떤 방식을 선택할지는 추후 회의를 통해 결정할 예쩡
 
-    // 도면만 따로 업로드를 하는 api
-    @PostMapping("/api/blueprint/upload")
-    public ApiResponse<?> postBlueprintFileForInspection(//@AuthenticationPrincipal PrincipalDetails principal,
-                                                         @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        return ApiResponse.onSuccess(blueprintS3UploadService.saveFileToInspection(multipartFile));
+    @PostMapping("/inspection")
+    public ApiResponse<?> postBlueprintFileForInspection(
+            // @AuthenticationPrincipal PrincipalDetails principal,
+            @RequestPart("details") BlueprintUploadRequest request,
+            @RequestPart("files") List<MultipartFile> files) throws IOException {
+        return ApiResponse.onSuccess(blueprintS3UploadService.saveFileToInspection(request, files));
     }
 
-    // 도면 상세 페이지 이미지 업로드
-    @PostMapping("/api/blueprint/detail-image/upload")
-    public ApiResponse<?> postBlueprintDetailImageForInspection(//@AuthenticationPrincipal PrincipalDetails details,
-                                                                @RequestParam("/file") MultipartFile multipartFile) throws IOException {
-        return ApiResponse.onSuccess(blueprintS3UploadService.saveFileToDetails(multipartFile));
+    @GetMapping("/presigned-url")
+    public ApiResponse<String> getPresignedUrl(
+            // @AuthenticationPrincipal PrincipalDetails principal,
+            @RequestParam String dir) {
+        return ApiResponse.onSuccess(s3service.getPresignedUrl(dir));
     }
-
-    // 도면 썸네일 업로드
-    // 썸네일에 대한 버킷은 아직 만들지 않음 -> 상세페이지 이미지랑 같이 저장할까 생각 중 (좋은 의견있으면 알려주세요)
-    @PostMapping("/api/blueprint/thumbnail/upload")
-    public ApiResponse<?> postBlueprintThumbnailForInspection(//@AuthenticationPrincipal PrincipalDetails details,
-                                                              @RequestParam("/file") MultipartFile multipartFile) throws IOException {
-        if (multipartFile.isEmpty()) throw new BaseException(ErrorCode.BLUEPRINT_FILE_NECESSARY);
-        return ApiResponse.onSuccess(blueprintS3UploadService.saveFileToDetails(multipartFile));
-    }
-
 }

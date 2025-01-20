@@ -72,6 +72,11 @@ public class ExceptionAdvice {
         return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
     }
 
+    @ExceptionHandler(BlueprintNotApprovedException.class)
+    public ApiResponse<?> BlueprintNotApprovedException(BlueprintNotApprovedException e) {
+        return ApiResponse.onFailure("403", "승인받지 않은 도면입니다.", null);
+    }
+
     /**
      * 서버 에러
      * @param e
