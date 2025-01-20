@@ -1,6 +1,7 @@
 package com.onetool.server.blueprint;
 
 import com.onetool.server.blueprint.dto.BlueprintRequest;
+import com.onetool.server.blueprint.dto.BlueprintUploadRequest;
 import com.onetool.server.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.order.OrderBlueprint;
@@ -69,6 +70,9 @@ public class Blueprint extends BaseEntity {
     @OneToMany(mappedBy = "blueprint")
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
+    @OneToMany(mappedBy = "blueprint")
+    private List<BlueprintFile> blueprintFiles = new ArrayList<>();
+
     @Builder
     public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, String secondCategory, InspectionStatus inspectionStatus, List<OrderBlueprint> orderBlueprints, List<CartBlueprint> cartBlueprints) {
         this.id = id;
@@ -109,6 +113,17 @@ public class Blueprint extends BaseEntity {
                 .saleExpiredDate(blueprintRequest.saleExpiredDate())
                 .creatorName(blueprintRequest.creatorName())
                 .downloadLink(blueprintRequest.downloadLink())
+                .build();
+    }
+
+    public static Blueprint fromUploadRequest(final BlueprintUploadRequest uploadRequest){
+        return Blueprint.builder()
+                .categoryId(uploadRequest.categoryId())
+                .standardPrice(uploadRequest.standardPrice())
+                .blueprintDetails(uploadRequest.blueprintDetails())
+                .extension(uploadRequest.extension())
+                .program(uploadRequest.program())
+                .creatorName(uploadRequest.creatorName())
                 .build();
     }
 }
