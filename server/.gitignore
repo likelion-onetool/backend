@@ -1,13 +1,11 @@
 HELP.md
-.gradle
+server/.gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 /src/main/resources/application-dev.properties
-echo .DS_Store
-.idea
-.gitignore
+
 ### STS ###
 .apt_generated
 .classpath
@@ -28,6 +26,8 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+compose.yml
+.gitignore
 
 ### NetBeans ###
 /nbproject/private/
@@ -37,4 +37,5 @@ out/
 /.nb-gradle/
 
 ### VS Code ###
-.vscode/
+.vscode/!/.gitignore
+!/.gitignore
