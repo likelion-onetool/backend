@@ -129,4 +129,9 @@ public class Blueprint extends BaseEntity {
                 .creatorName(uploadRequest.creatorName())
                 .build();
     }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
 }
