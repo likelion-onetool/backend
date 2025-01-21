@@ -70,6 +70,9 @@ public class Blueprint extends BaseEntity {
     @OneToMany(mappedBy = "blueprint")
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @OneToMany(mappedBy = "blueprint")
     private List<BlueprintFile> blueprintFiles = new ArrayList<>();
 
