@@ -1,7 +1,9 @@
 package com.onetool.server.category;
 
-import com.onetool.server.blueprint.service.BlueprintService;
-import com.onetool.server.blueprint.dto.SearchResponse;
+import com.onetool.server.api.blueprint.service.BlueprintSearchService;
+import com.onetool.server.api.blueprint.service.BlueprintService;
+import com.onetool.server.api.blueprint.dto.SearchResponse;
+import com.onetool.server.api.category.FirstCategoryType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,16 @@ public class CategoryServiceTest {
     @Autowired
     private BlueprintService blueprintService;
 
+    @Autowired
+    private BlueprintSearchService blueprintSearchService;
+
     @DisplayName("building 카테고리를 가진 도면이 잘 나오는지 확인")
     @Test
     void search_first_category_building() {
         FirstCategoryType type = FirstCategoryType.CATEGORY_BUILDING;
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type, null, pageable);
+        Page<SearchResponse> response = blueprintSearchService.findAllByCategory(type, null, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 
@@ -37,7 +42,7 @@ public class CategoryServiceTest {
         String second = "주거";
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type, second, pageable);
+        Page<SearchResponse> response = blueprintSearchService.findAllByCategory(type, second, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 
@@ -48,7 +53,7 @@ public class CategoryServiceTest {
         String second = "공공";
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type, second, pageable);
+        Page<SearchResponse> response = blueprintSearchService.findAllByCategory(type, second, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 
@@ -59,7 +64,7 @@ public class CategoryServiceTest {
         String second = "도로";
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type, second, pageable);
+        Page<SearchResponse> response = blueprintSearchService.findAllByCategory(type, second, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
     @DisplayName("civil 카테고리의 세부 카테고리의 도면을 검색한다.")
@@ -68,7 +73,7 @@ public class CategoryServiceTest {
         FirstCategoryType type = FirstCategoryType.CATEGORY_INTERIOR;
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type, null, pageable);
+        Page<SearchResponse> response = blueprintSearchService.findAllByCategory(type, null, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 

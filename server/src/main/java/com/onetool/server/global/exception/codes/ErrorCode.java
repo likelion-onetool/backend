@@ -16,6 +16,7 @@ public enum ErrorCode implements BaseCode {
 
     //사용자 에러
     NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
+    ILLEGAL_LOGOUT_USER(HttpStatus.BAD_REQUEST, "MEMBER-0002", "이미 로그아웃된 회원입니다."),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
@@ -29,6 +30,9 @@ public enum ErrorCode implements BaseCode {
     NO_BLUEPRINT_FOUND(HttpStatus.NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
     BLUEPRINT_FILE_NECESSARY(HttpStatus.BAD_REQUEST, "BLUEPRINT-0001", "도면 파일을 업로드해주세요."),
     BLUEPRINT_FILE_EXTENSION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "BLUEPRINT-0002", "도면 파일 확장자가 올바르지 않습니다."),
+
+    //카테고리 에러
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
 
     //장바구니 에러
     NO_ITEM_IN_CART(HttpStatus.NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),

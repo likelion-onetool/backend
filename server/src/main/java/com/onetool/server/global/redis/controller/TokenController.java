@@ -4,6 +4,7 @@ import com.onetool.server.global.auth.AuthService;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.redis.domain.dto.RefreshTokenResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -18,42 +19,42 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping(value = "/auth")
 public class TokenController {
 
     private final JwtUtil jwtUtil;
     private final AuthService authService;
 
-    @PostMapping("/validate")
+    @PostMapping("/auth/validate")
     public void validate(@RequestHeader("Authorization") String requestAccessToken) {
         authService.validate(requestAccessToken);
     }
 
-    @PostMapping("/auth/reissue")
-    public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String refreshToken) {
+    @PostMapping("/silent-refresh")
+    public ApiResponse<?> reissue(
+            @CookieValue(name = "refreshToken") String refreshToken,
+            HttpServletResponse servletResponse
+    ) {
         log.info("reissue token: {}", refreshToken);
         Map<String, String> tokens = authService.reissue(refreshToken);
+        log.info("reissued token: {}", tokens);
 
         if (tokens != null) {
-            ResponseCookie responseCookie = ResponseCookie.from("refresh-token", tokens.get("refreshToken"))
+            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
                     .maxAge(860000)
                     .httpOnly(true)
                     .secure(true)
                     .build();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.get("accessToken"))
-                    .build();
+            servletResponse.setHeader("Set-Cookie", responseCookie.toString());
+            return ApiResponse.onSuccess(tokens.get("accessToken"));
         } else {
-            ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
+            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", "")
                     .maxAge(0)
                     .path("/")
                     .build();
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    .build();
+            return ApiResponse.onFailure("401",
+                    "기존 refreshToken이 유효하지 않습니다.",
+                    null
+                    );
         }
     }
 }

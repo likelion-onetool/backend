@@ -116,4 +116,5 @@ public class SecurityConfig {
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
         return CookieSameSiteSupplier.ofLax();
     }
+
 }

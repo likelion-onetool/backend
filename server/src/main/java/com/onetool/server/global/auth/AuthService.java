@@ -4,7 +4,6 @@ import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.InvalidTokenException;
 import com.onetool.server.global.redis.service.TokenRedisService;
-import com.onetool.server.member.dto.MemberLoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +48,8 @@ public class AuthService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         MemberAuthContext memberAuthContext = principalDetails.getContext();
 
-        String memberIdString = memberAuthContext.getId().toString();
-        String refreshTokenInRedis = tokenRedisService.getValues(memberIdString);
+        String email = memberAuthContext.getEmail();
+        String refreshTokenInRedis = tokenRedisService.getValues(email);
 
         log.info("reissue() - refreshTokenInRedis: {}", refreshTokenInRedis);
 
@@ -59,13 +58,13 @@ public class AuthService {
         }
 
         if(!jwtUtil.validateToken(refreshTokenInRedis)) {
-            tokenRedisService.deleteValues(memberIdString);
+            tokenRedisService.deleteValues(email);
             return null;
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        tokenRedisService.deleteValues(memberIdString);
+        tokenRedisService.deleteValues(email);
         return jwtUtil.createTokens(memberAuthContext);
     }
 

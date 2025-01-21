@@ -6,15 +6,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
+@NoArgsConstructor
 public class ApiResponse<T> {
     @JsonProperty("isSuccess")
-    private final Boolean isSuccess;
-    private final String code;
-    private final String message;
+    private Boolean isSuccess;
+    private String code;
+    private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 

@@ -31,6 +31,9 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisConnectionFactory redisConnectionFactory2() {return createRedis(2);}
+
+    @Bean
     public RedisTemplate<String, Object> mailRedisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -48,10 +51,20 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    @Bean
+    public RedisTemplate<String, Object> tokenBlackListRedisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory2());
+        return redisTemplate;
+    }
+
     private LettuceConnectionFactory createRedis(int index) {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisProperties.getHost());
         config.setPort(redisProperties.getPort());
+        config.setPassword(redisProperties.getPassword());
         config.setDatabase(index);
         return new LettuceConnectionFactory(config);
     }

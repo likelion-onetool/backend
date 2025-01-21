@@ -1,6 +1,6 @@
 package com.onetool.server.global.auth;
 
-import com.onetool.server.member.domain.Member;
+import com.onetool.server.api.member.domain.Member;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

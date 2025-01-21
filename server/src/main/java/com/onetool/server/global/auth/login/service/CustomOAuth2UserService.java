@@ -2,9 +2,9 @@ package com.onetool.server.global.auth.login.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.login.OAuthAttributes;
-import com.onetool.server.member.domain.Member;
-import com.onetool.server.member.repository.MemberRepository;
-import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +43,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Member createdMember = getMember(extractAttributes, socialType);
         MemberAuthContext context = MemberAuthContext.builder()
+                .id(createdMember.getId())
                 .email(createdMember.getEmail())
                 .name(createdMember.getName())
                 .role(createdMember.getRole().name())
@@ -53,7 +54,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private SocialType getSocialType(String registrationId) {
-        return SocialType.GOOGLE;
+        if(registrationId.equals(SocialType.GOOGLE.name())){
+            return SocialType.GOOGLE;
+        } else if(registrationId.equals(SocialType.KAKAO.name())){
+            return SocialType.KAKAO;
+        } else if(registrationId.equals(SocialType.NAVER.name())){
+            return SocialType.NAVER;
+        } else {
+            return SocialType.OTHER;
+        }
     }
 
     private Member getMember(OAuthAttributes attributes, SocialType socialType) {

@@ -3,9 +3,9 @@ package com.onetool.server.global.auth.login.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.member.dto.MemberLoginResponse;
-import com.onetool.server.member.repository.MemberRepository;
-import com.onetool.server.member.enums.UserRole;
+import com.onetool.server.api.member.dto.MemberLoginResponse;
+import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +46,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 Map<String, String> tokens = jwtUtil.createTokens(memberAuthContext);
                 MemberLoginResponse tokenResponse = MemberLoginResponse.builder()
                                 .accessToken("Bearer " + tokens.get("accessToken"))
-                                .refreshToken(tokens.get("refreshToken"))
                                 .build();
                 String result = objectMapper.writeValueAsString(tokenResponse);
 
@@ -63,6 +62,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private void loginSuccess(HttpServletResponse response, MemberAuthContext context) throws  IOException {
         MemberAuthContext memberAuthContext = MemberAuthContext.builder()
+                .id(context.getId())
                 .email(context.getEmail())
                 .role(context.getRole())
                 .build();
@@ -70,7 +70,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Map<String, String> tokens = jwtUtil.createTokens(memberAuthContext);
         MemberLoginResponse tokenResponse = MemberLoginResponse.builder()
                 .accessToken("Bearer " + tokens.get("accessToken"))
-                .refreshToken(tokens.get("refreshToken"))
                 .build();
         String result = objectMapper.writeValueAsString(tokenResponse);
 

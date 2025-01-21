@@ -2,6 +2,7 @@ package com.onetool.server.global.redis.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -15,10 +16,15 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MailRedisService {
 
     private final RedisTemplate<String, Object> mailRedisTemplate;
+
+    public MailRedisService(
+            @Qualifier("mailRedisTemplate")
+            RedisTemplate<String, Object> mailRedisTemplate) {
+        this.mailRedisTemplate = mailRedisTemplate;
+    }
 
     public void setValues(String key, String data) {
         ValueOperations<String, Object> values = mailRedisTemplate.opsForValue();

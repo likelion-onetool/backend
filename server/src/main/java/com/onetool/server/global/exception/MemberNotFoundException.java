@@ -1,5 +1,9 @@
 package com.onetool.server.global.exception;
 
-public class MemberNotFoundException extends RuntimeException {
-    public MemberNotFoundException(){}
+import com.onetool.server.global.exception.codes.BaseCode;
+
+public class MemberNotFoundException extends BaseException {
+    public MemberNotFoundException(BaseCode code) {
+        super(code);
+    }
 }
