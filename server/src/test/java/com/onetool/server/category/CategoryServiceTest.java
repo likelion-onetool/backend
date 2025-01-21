@@ -1,8 +1,7 @@
 package com.onetool.server.category;
 
-import com.onetool.server.api.blueprint.service.BlueprintService;
-import com.onetool.server.api.blueprint.dto.SearchResponse;
-import com.onetool.server.api.category.FirstCategoryType;
+import com.onetool.server.blueprint.service.BlueprintService;
+import com.onetool.server.blueprint.dto.SearchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

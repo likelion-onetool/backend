@@ -1,9 +1,9 @@
 package com.onetool.server;
 
-import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.api.category.FirstCategory;
-import com.onetool.server.api.category.FirstCategoryRepository;
+import com.onetool.server.blueprint.Blueprint;
+import com.onetool.server.blueprint.repository.BlueprintRepository;
+import com.onetool.server.category.FirstCategory;
+import com.onetool.server.category.FirstCategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
