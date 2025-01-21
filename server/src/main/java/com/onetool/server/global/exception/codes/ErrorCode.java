@@ -34,6 +34,9 @@ public enum ErrorCode implements BaseCode {
     //카테고리 에러
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
 
+    //카테고리 에러
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
+
     //장바구니 에러
     NO_ITEM_IN_CART(HttpStatus.NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),
     ALREADY_EXIST_BLUEPRINT_IN_CART(HttpStatus.BAD_REQUEST, "CART-0001", "장바구니에 존재하는 상품입니다."),
