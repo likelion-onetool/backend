@@ -1,8 +1,8 @@
 package com.onetool.server;
 
-import com.onetool.server.blueprint.Blueprint;
-import com.onetool.server.blueprint.InspectionStatus;
-import com.onetool.server.blueprint.repository.BlueprintRepository;
+import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.InspectionStatus;
+import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
