@@ -25,7 +25,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "member_cart_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
     private List<CartBlueprint> cartItems = new ArrayList<>();
 
     private Cart(Member member) {

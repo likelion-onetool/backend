@@ -2,6 +2,7 @@ package com.onetool.server.api.member.repository;
 
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.SocialType;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +26,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
     boolean existsByEmail(@Param("email") String email);
+
+    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.cart WHERE m.id = :id")
+    Optional<Member> findMemberById(@Param("id") Long id);
+
+
 }

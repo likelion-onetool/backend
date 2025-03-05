@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -38,32 +39,31 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
             log.info("토큰: " + token);
 
-            if (checkAccessTokenValid(token)) {
+            PrincipalDetails principalDetails = checkAccessTokenValid(token);
+            if (principalDetails != null) {
                 log.info("validation 통과");
-                Long userId = jwtUtil.getUserId(token);
 
-                PrincipalDetails principalDetails = customUserDetailsService.loadUserByUsername(userId.toString());
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(principalDetails, token, principalDetails.getAuthorities());
 
-                if (principalDetails != null) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(principalDetails, token, principalDetails.getAuthorities());
+                log.info("필터 설정됨: ");
 
-                    log.info("필터 설정됨: ");
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                securityContext.setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContextHolder.setContext(securityContext);
 
-                    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                    securityContext.setAuthentication(usernamePasswordAuthenticationToken);
-                    SecurityContextHolder.setContext(securityContext);
-
-                    securityContextRepository.saveContext(securityContext, request, response);
-                }
+                securityContextRepository.saveContext(securityContext, request, response);
             }
         }
         filterChain.doFilter(request, response);
     }
 
-    private boolean checkAccessTokenValid(String accessToken) {
+    private PrincipalDetails checkAccessTokenValid(String accessToken) {
         String id = jwtUtil.getUserId(accessToken).toString();
-        customUserDetailsService.saveUserInSecurityContext(id, accessToken);
-        return jwtUtil.validateToken(accessToken);
+        PrincipalDetails principalDetails = customUserDetailsService.saveUserInSecurityContext(id, accessToken);
+        if(jwtUtil.validateToken(accessToken)) {
+            return principalDetails;
+        }
+        return null;
     }
 }
