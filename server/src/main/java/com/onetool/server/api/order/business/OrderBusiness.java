@@ -12,12 +12,16 @@ import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Business
 @RequiredArgsConstructor
+@Slf4j
 public class OrderBusiness {
 
     private final OrderService orderService;
@@ -35,8 +39,9 @@ public class OrderBusiness {
 
     @Transactional
     public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal) {
-        Member member = memberService.findOne(principal.getContext().getEmail());
+        Member member = memberService.findOneWithCart(principal.getContext().getId());
         List<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId());
+        List<Blueprint> blueprintList = blueprintService.findAll();
         return MyPageOrderResponse.from(ordersList);
     }
 

@@ -7,11 +7,10 @@ import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.payments.TossPayments;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.List;
 @DynamicInsert
 @SQLDelete(sql = "UPDATE Orders SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
+@Slf4j
 public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +37,16 @@ public class Orders extends BaseEntity {
     @ColumnDefault("'PAY_PENDING'")
     private PaymentStatus status;
 
+    @BatchSize(size = 100)
     @Setter
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     private List<OrderBlueprint> orderItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "orders")
+    @OneToOne(mappedBy = "orders", fetch = FetchType.LAZY)
     private Payment payment;
 
     @Column(name = "is_deleted", nullable = false)
@@ -61,14 +62,17 @@ public class Orders extends BaseEntity {
     }
 
     public List<String> getOrderItemsDownloadLinks() {
+        log.info("DownLoadList start~");
         List<String> orderItemsDownloadLinks = new ArrayList<>();
         if (this.getStatus() == PaymentStatus.PAY_DONE) {
+
             this.orderItems.forEach(orderBlueprint ->
                     orderItemsDownloadLinks.add(
                             orderBlueprint.getDownloadUrl())
-
             );
         }
+        log.info("DownLoadList end~");
+
         return orderItemsDownloadLinks;
     }
 

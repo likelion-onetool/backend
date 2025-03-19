@@ -31,6 +31,11 @@ public class BlueprintService {
         return blueprintList;
     }
 
+    public List<Blueprint> findAll(){
+        List<Blueprint> blueprintList = blueprintRepository.findAll();
+        return blueprintList;
+    }
+
     public Blueprint findBlueprintById(Long blueprintId) {
         return blueprintRepository.findById(blueprintId)
                 .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : " + blueprintId));
