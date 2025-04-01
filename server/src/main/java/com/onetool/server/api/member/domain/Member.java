@@ -26,6 +26,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
+@Table(
+        name = "member",
+        indexes = {
+                @Index(name = "idx_name", columnList = "name")
+        }
+)
 @Getter
 @Setter(value = AccessLevel.PRIVATE)
 @NoArgsConstructor
