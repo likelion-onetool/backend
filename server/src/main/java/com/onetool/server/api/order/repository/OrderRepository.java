@@ -13,7 +13,6 @@ public interface OrderRepository {
     Optional<Order> findById(Long id);
     Order save(Order order);
     void deleteById(Long id);
-
     List<Order> findByMemberId(Long memberId);
     Page<Order> findByMemberId(Long memberId, Pageable pageable);
 }

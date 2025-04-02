@@ -4,5 +4,5 @@ import com.onetool.server.api.order.OrderBlueprint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.Repository;
 
-public interface OrderBlueprintJpaRepository extends OrderBlueprintRepository, Repository<OrderBlueprint, Long> {
+public interface OrderBlueprintJpaRepository extends OrderBlueprintRepository, JpaRepository<OrderBlueprint, Long> {
 }
