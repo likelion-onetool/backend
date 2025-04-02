@@ -33,11 +33,6 @@ public class BlueprintService {
         return blueprintList;
     }
 
-    public List<Blueprint> findCacheAll(){
-        List<Blueprint> blueprintList = blueprintRepository.findAll();
-        return blueprintList;
-    }
-
     public List<Blueprint> findAll(){
         List<Blueprint> blueprintList = blueprintRepository.findAll();
         return blueprintList;
