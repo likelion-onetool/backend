@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
+import java.util.Set;
 
 @Business
 @RequiredArgsConstructor
@@ -29,17 +30,17 @@ public class OrderBusiness {
     private final BlueprintService blueprintService;
 
     @Transactional
-    public Long createOrder(PrincipalDetails principalDetails, OrderRequest orderRequest) {
-        Member member = memberService.findOne(principalDetails.getContext().getEmail());
-        List<Blueprint> blueprintList = blueprintService.findAllBlueprintByIds(orderRequest.blueprintIds());
+    public Long createOrder(String userEmail, Set<Long> blueprintIds) {
+        Member member = memberService.findOne(userEmail);
+        List<Blueprint> blueprintList = blueprintService.findAllBlueprintByIds(blueprintIds);
         Order order = new Order(blueprintList);
 
         return orderService.saveOrder(order, member, blueprintList);
     }
 
     @Transactional
-    public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal, Pageable pageable) {
-        Member member = memberService.findOneWithCart(principal.getContext().getId());
+    public List<MyPageOrderResponse> getMyPageOrderResponseList(Long userId, Pageable pageable) {
+        Member member = memberService.findOneWithCart(userId);
         Page<Order> ordersList = orderService.findAllOrderByUserId(member.getId(), pageable);
         List<Blueprint> blueprintList = blueprintService.findAll();
         return MyPageOrderResponse.from(ordersList.getContent());

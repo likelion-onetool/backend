@@ -26,7 +26,7 @@ public class OrderController {
             @AuthenticationPrincipal PrincipalDetails principal,
             @Valid @RequestBody OrderRequest request
     ) {
-        Long orderId = orderBusiness.createOrder(principal, request);
+        Long orderId = orderBusiness.createOrder(principal.getContext().getEmail(), request.blueprintIds());
         return ApiResponse.onSuccess(orderId);
     }
 
@@ -34,7 +34,7 @@ public class OrderController {
     public ApiResponse<List<MyPageOrderResponse>> orderGet(
             @AuthenticationPrincipal PrincipalDetails principal,
             Pageable pageable) {
-        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal, pageable);
+        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal.getContext().getId(), pageable);
         return ApiResponse.onSuccess(myPageOrderResponseList);
     }
 
