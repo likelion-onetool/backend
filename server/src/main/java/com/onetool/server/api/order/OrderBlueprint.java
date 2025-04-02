@@ -25,8 +25,8 @@ public class OrderBlueprint extends BaseEntity {
     private Blueprint blueprint;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "orders_id")
-    private Orders order;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private String downloadUrl;
 
@@ -38,7 +38,7 @@ public class OrderBlueprint extends BaseEntity {
     }
 
     //연관관계 맺기~~~~~~
-    public void assignOrder(Orders order) {
+    public void assignOrder(Order order) {
         if (this.order != order) {
             this.order = order;
             order.getOrderItems().add(this);

@@ -4,7 +4,7 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.api.order.dto.response.MyPageOrderResponse;
 import com.onetool.server.api.order.service.OrderService;
@@ -13,14 +13,11 @@ import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Business
 @RequiredArgsConstructor
@@ -35,22 +32,22 @@ public class OrderBusiness {
     public Long createOrder(PrincipalDetails principalDetails, OrderRequest orderRequest) {
         Member member = memberService.findOne(principalDetails.getContext().getEmail());
         List<Blueprint> blueprintList = blueprintService.findAllBlueprintByIds(orderRequest.blueprintIds());
-        Orders orders = new Orders(blueprintList);
+        Order order = new Order(blueprintList);
 
-        return orderService.saveOrder(orders, member, blueprintList);
+        return orderService.saveOrder(order, member, blueprintList);
     }
 
     @Transactional
     public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal, Pageable pageable) {
         Member member = memberService.findOneWithCart(principal.getContext().getId());
-        Page<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId(), pageable);
+        Page<Order> ordersList = orderService.findAllOrderByUserId(member.getId(), pageable);
         List<Blueprint> blueprintList = blueprintService.findAll();
         return MyPageOrderResponse.from(ordersList.getContent());
     }
 
     @Transactional
-    public void removeOrders(Long orderId) {
-        Orders orders = orderService.findOrdersById(orderId);
-        orderService.deleteOrder(orders);
+    public void removeOrder(Long orderId) {
+        Order order = orderService.findOrderById(orderId);
+        orderService.deleteOrder(order);
     }
 }

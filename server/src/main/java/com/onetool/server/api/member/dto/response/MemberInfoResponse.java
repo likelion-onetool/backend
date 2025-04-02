@@ -1,7 +1,7 @@
 package com.onetool.server.api.member.dto.response;
 
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.order.dto.response.OrderResponse;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public record MemberInfoResponse(
                 .build();
     }
 
-    private static List<OrderResponse.OrderCompleteResponseDto> convertOrdersToResponse(List<Orders> orders) {
+    private static List<OrderResponse.OrderCompleteResponseDto> convertOrdersToResponse(List<Order> orders) {
         return Optional.ofNullable(orders)
                 .orElse(List.of())
                 .stream()

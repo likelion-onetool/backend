@@ -2,8 +2,7 @@ package com.onetool.server.api.order.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.OrderBlueprint;
-import com.onetool.server.api.order.Orders;
-import com.onetool.server.api.order.repository.OrderJpaRepository;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.global.new_exception.exception.ApiException;
@@ -25,47 +24,47 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Page<Orders> findAllOrdersByUserId(Long memberId, Pageable pageable) {
+    public Page<Order> findAllOrderByUserId(Long memberId, Pageable pageable) {
         return orderRepository.findByMemberId(memberId, pageable);
     }
 
     @Transactional
-    public Orders findOrdersById(Long orderId) {
+    public Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApiException(OrderErrorCode.NOT_FOUND_ERROR,"orderId : "+orderId));
     }
 
     @Transactional
-    public Long saveOrder(Orders orders, Member member, List<Blueprint> blueprintList) {
-        validateOrdersIsNull(orders);
-        assignAllConnectOrders(orders, member, blueprintList);
-        Orders saveOrders = orderRepository.save(orders);
+    public Long saveOrder(Order order, Member member, List<Blueprint> blueprintList) {
+        validateOrderIsNull(order);
+        assignAllConnectOrders(order, member, blueprintList);
+        Order saveOrder = orderRepository.save(order);
 
-        return saveOrders.getId();
+        return saveOrder.getId();
     }
 
     @Transactional
-    public void deleteOrder(Orders orders) {
-        validateOrdersIsNull(orders);
-        orderRepository.deleteById(orders.getId());
+    public void deleteOrder(Order order) {
+        validateOrderIsNull(order);
+        orderRepository.deleteById(order.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<Orders> findAllByUserId(Long userId) {
+    public List<Order> findAllByUserId(Long userId) {
         return orderRepository.findByMemberId(userId);
     }
 
-    private void validateOrdersIsNull(Orders orders) {
-        if (orders == null) {
+    private void validateOrderIsNull(Order order) {
+        if (order == null) {
             throw new ApiException(OrderErrorCode.NULL_POINT_ERROR,"Orders 객체가 NULL입니다.");
         }
     }
 
-    private void assignAllConnectOrders(Orders orders, Member member, List<Blueprint> blueprintList) {
-        orders.assignMember(member);
+    private void assignAllConnectOrders(Order order, Member member, List<Blueprint> blueprintList) {
+        order.assignMember(member);
         blueprintList.forEach(blueprint -> {
             OrderBlueprint orderBlueprint = new OrderBlueprint(blueprint.getDownloadLink());
-            orderBlueprint.assignOrder(orders);
+            orderBlueprint.assignOrder(order);
             orderBlueprint.assignBlueprint(blueprint);
         });
     }

@@ -36,7 +36,9 @@ public class MemberLoginBusiness {
             log.error("비밀번호 불일치: {}", encoder.encode(member.getPassword()));
             throw new ApiException(LoginErrorCode.INVALID_PASSWORD);
         }
-
+        log.info("fuck");
+        System.out.println(member.getName());
+        System.out.println(member.getRole());
         MemberAuthContext context = MemberAuthContext.from(member);
         return jwtUtil.createTokens(context);
     }

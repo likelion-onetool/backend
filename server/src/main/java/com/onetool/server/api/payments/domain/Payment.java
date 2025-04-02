@@ -1,6 +1,6 @@
 package com.onetool.server.api.payments.domain;
 
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,8 +28,8 @@ public class Payment extends BaseEntity {
     private Long totalPrice;
 
     @OneToOne
-    @JoinColumn(name = "orders_id")
-    private Orders orders;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;

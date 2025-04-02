@@ -5,7 +5,6 @@ import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.api.order.dto.response.MyPageOrderResponse;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.api.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ public class OrderController {
     private final OrderBusiness orderBusiness;
 
     @PostMapping
-    public ApiResponse<Long> ordersPost(
+    public ApiResponse<Long> orderPost(
             @AuthenticationPrincipal PrincipalDetails principal,
             @Valid @RequestBody OrderRequest request
     ) {
@@ -32,7 +31,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponse>> ordersGet(
+    public ApiResponse<List<MyPageOrderResponse>> orderGet(
             @AuthenticationPrincipal PrincipalDetails principal,
             Pageable pageable) {
         List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal, pageable);
@@ -40,10 +39,10 @@ public class OrderController {
     }
 
     @DeleteMapping
-    public ApiResponse<Long> ordersDelete(
+    public ApiResponse<Long> orderDelete(
             @RequestBody Long orderId
     ) {
-        orderBusiness.removeOrders(orderId);
+        orderBusiness.removeOrder(orderId);
         return ApiResponse.onSuccess(orderId);
     }
 }

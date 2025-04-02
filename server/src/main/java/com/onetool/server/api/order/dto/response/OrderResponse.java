@@ -1,7 +1,7 @@
 package com.onetool.server.api.order.dto.response;
 
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,13 +19,13 @@ public class OrderResponse {
             String status,
             List<String> downloadUrl
     ) {
-        public static List<MyPageOrderResponseDto> from(List<Orders> ordersList) {
+        public static List<MyPageOrderResponseDto> from(List<Order> orderList) {
             List<MyPageOrderResponseDto> dtos = new ArrayList<>();
-            if (isOrderEmpty(ordersList)) {
+            if (isOrderEmpty(orderList)) {
                 return dtos;
             }
 
-            ordersList.forEach(orders -> {
+            orderList.forEach(orders -> {
                 dtos.add(
                         MyPageOrderResponseDto.builder()
                                 .orderId(orders.getId())
@@ -39,11 +39,11 @@ public class OrderResponse {
             return dtos;
         }
 
-        private static String createOrderName(Orders orders) {
-            log.info("orderItem size: {}", orders.getOrderItems());
+        private static String createOrderName(Order order) {
+            log.info("orderItem size: {}", order.getOrderItems());
             StringBuilder sb = new StringBuilder();
-            String firstBlueprintName = orders.getOrderItems().get(0).getBlueprint().getBlueprintName();
-            int blueprintCount = orders.getOrderItems().size();
+            String firstBlueprintName = order.getOrderItems().get(0).getBlueprint().getBlueprintName();
+            int blueprintCount = order.getOrderItems().size();
             sb.append(firstBlueprintName);
 
             if (blueprintCount > 1) {
@@ -55,8 +55,8 @@ public class OrderResponse {
             return sb.toString();
         }
 
-        private static boolean isOrderEmpty(List<Orders> ordersList) {
-            return ordersList.isEmpty();
+        private static boolean isOrderEmpty(List<Order> orderList) {
+            return orderList.isEmpty();
         }
 
     }
@@ -66,10 +66,10 @@ public class OrderResponse {
             Long totalPrice,
             List<BlueprintResponse> blueprints
     ) {
-        public static OrderCompleteResponseDto response(Orders orders) {
+        public static OrderCompleteResponseDto response(Order order) {
             return OrderCompleteResponseDto.builder()
-                    .totalPrice(orders.getTotalPrice())
-                    .blueprints(orders.getOrderItems()
+                    .totalPrice(order.getTotalPrice())
+                    .blueprints(order.getOrderItems()
                             .stream()
                             .map(orderBlueprint ->
                                     BlueprintResponse.items(orderBlueprint.getBlueprint()))

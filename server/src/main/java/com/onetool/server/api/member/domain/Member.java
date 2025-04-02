@@ -4,10 +4,9 @@ import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.api.member.enums.UserRole;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
-import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
 import jakarta.persistence.*;
@@ -81,7 +80,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     @OrderBy("createdAt DESC")
-    private List<Orders> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isDeleted = false;
@@ -110,6 +109,6 @@ public class Member extends BaseEntity {
     }
 
     public List<OrderBlueprint> getOrderBlueprints() {
-        return Orders.getOrderItems(getOrders());
+        return Order.getOrderItems(getOrders());
     }
 }
