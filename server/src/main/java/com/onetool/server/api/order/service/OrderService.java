@@ -3,8 +3,9 @@ package com.onetool.server.api.order.service;
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.order.Orders;
-import com.onetool.server.api.order.repository.OrderRepository;
+import com.onetool.server.api.order.repository.OrderJpaRepository;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -38,15 +39,15 @@ public class OrderService {
     public Long saveOrder(Orders orders, Member member, List<Blueprint> blueprintList) {
         validateOrdersIsNull(orders);
         assignAllConnectOrders(orders, member, blueprintList);
-        orderRepository.save(orders);
+        Orders saveOrders = orderRepository.save(orders);
 
-        return orders.getId();
+        return saveOrders.getId();
     }
 
     @Transactional
     public void deleteOrder(Orders orders) {
         validateOrdersIsNull(orders);
-        orderRepository.delete(orders);
+        orderRepository.deleteById(orders.getId());
     }
 
     @Transactional(readOnly = true)
