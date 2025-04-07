@@ -43,10 +43,10 @@ class MemberServiceTest {
         memberRepository.save(member);
 
         // when
-        Member foundMember = memberService.findOne(member.getName(), member.getPhoneNum());
+        String memberEmail = memberService.findOne(member.getName(), member.getPhoneNum());
 
         // then
-        assertThat(foundMember.getEmail()).isEqualTo(member.getEmail());
+        assertThat(memberEmail).isEqualTo(member.getEmail());
     }
 
     @Test
