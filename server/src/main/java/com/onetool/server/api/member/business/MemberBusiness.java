@@ -28,8 +28,7 @@ public class MemberBusiness {
 
     @Transactional(readOnly = true)
     public String findEmail(String name, String phoneNum) {
-        Member member = memberService.findOne(name, phoneNum);
-        return member.getEmail();
+        return memberService.findOne(name, phoneNum);
     }
 
     @Transactional(readOnly = true)

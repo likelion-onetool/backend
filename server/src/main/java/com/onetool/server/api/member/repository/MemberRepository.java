@@ -28,7 +28,7 @@ public interface MemberRepository {
 
     Optional<Member> findByIdWithCart(Long id);
 
-    Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
+    Optional<String> findByNameAndPhoneNum(String name, String phoneNum);
 
     boolean existsByEmail(String email);
 
