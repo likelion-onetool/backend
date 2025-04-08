@@ -33,6 +33,7 @@ public class MemberFixture {
                 .phoneNum("01000000000")
                 .field("BACKEND")
                 .isNative(true)
+                .orders(new ArrayList<>())
                 .build();
     }
 
