@@ -24,10 +24,10 @@ public interface OrderJpaRepository extends OrderRepository, JpaRepository<Order
     void deleteById(Long id);
 
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.payment WHERE o.member.id = :memberId")
-    List<Order> findByMemberId(@Param("memberId") Long memberId);
+    List<Order> findAllByMemberId(@Param("memberId") Long memberId);
 
     @EntityGraph(attributePaths = {"payment"})
     @Query("SELECT o FROM Order o WHERE o.member.id = :memberId")
-    Page<Order> findByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+    Page<Order> findAllByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
 }

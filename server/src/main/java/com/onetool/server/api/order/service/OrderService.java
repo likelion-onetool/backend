@@ -24,12 +24,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Page<Order> findAllOrderByUserId(Long memberId, Pageable pageable) {
-        return orderRepository.findByMemberId(memberId, pageable);
+    public Page<Order> findAll(Long memberId, Pageable pageable) {
+        return orderRepository.findAllByMemberId(memberId, pageable);
     }
 
     @Transactional
-    public Order findOrderById(Long orderId) {
+    public Order findOne(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApiException(OrderErrorCode.NOT_FOUND_ERROR,"orderId : "+orderId));
     }
@@ -50,8 +50,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Order> findAllByUserId(Long userId) {
-        return orderRepository.findByMemberId(userId);
+    public List<Order> findAll(Long userId) {
+        return orderRepository.findAllByMemberId(userId);
     }
 
     private void validateOrderIsNull(Order order) {
