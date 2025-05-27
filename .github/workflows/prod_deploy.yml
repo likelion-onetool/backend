@@ -9,10 +9,6 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
       - name: Checkout Codes
         uses: actions/checkout@v4
