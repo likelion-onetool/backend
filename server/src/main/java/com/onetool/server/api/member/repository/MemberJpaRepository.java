@@ -37,8 +37,8 @@ public interface MemberJpaRepository extends MemberRepository, Repository<Member
     @Query("SELECT m FROM Member m LEFT JOIN FETCH m.cart WHERE m.id = :id")
     Optional<Member> findByIdWithCart(@Param("id") Long id);
 
-    @Query("SELECT m FROM Member m WHERE m.name = :name AND m.phoneNum = :phoneNum")
-    Optional<Member> findByNameAndPhoneNum(@Param("name") String name, @Param("phoneNum") String phoneNum);
+    @Query("SELECT m.email FROM Member m WHERE m.name = :name AND m.phoneNum = :phoneNum")
+    Optional<String> findByNameAndPhoneNum(@Param("name") String name, @Param("phoneNum") String phoneNum);
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
     boolean existsByEmail(@Param("email") String email);
