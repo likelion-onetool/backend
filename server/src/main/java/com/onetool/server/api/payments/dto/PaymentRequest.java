@@ -21,7 +21,7 @@ public record PaymentRequest(
                 .accountName(request.accountName())
                 .bankName(request.bankName())
                 .totalPrice(request.totalPrice())
-                .orders(orderService.findOrdersById(request.orderId()))
+                .order(orderService.findOrderById(request.orderId()))
                 .build();
     }
 }

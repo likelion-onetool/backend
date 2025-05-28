@@ -28,6 +28,7 @@ public class BlueprintService {
         return blueprintList;
     }
 
+  
     public List<Blueprint> findCacheAll(){
         return blueprintRepository.findAll();
     }

@@ -1,6 +1,6 @@
 package com.onetool.server.api.payments.service;
 
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.repository.PaymentRepository;
 import com.onetool.server.global.new_exception.exception.ApiException;
@@ -18,8 +18,8 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Transactional(readOnly = true)
-    public Payment findByOrders(Orders orders) {
-        return paymentRepository.findByOrders(orders);
+    public Payment findByOrders(Order order) {
+        return paymentRepository.findByOrders(order);
     }
 
     @Transactional(readOnly = true)

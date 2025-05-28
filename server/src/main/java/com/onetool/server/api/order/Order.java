@@ -5,9 +5,9 @@ import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.domain.PaymentStatus;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.payments.TossPayments;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.*;
@@ -24,7 +24,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE Orders SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 @Slf4j
-public class Orders extends BaseEntity {
+@Table(name ="orders")
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,16 +44,16 @@ public class Orders extends BaseEntity {
     private List<OrderBlueprint> orderItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_member_id")
+    @JoinColumn(name="member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "orders", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
     private Payment payment;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    public Orders(List<Blueprint> blueprints) {
+    public Order(List<Blueprint> blueprints) {
         this.totalCount = blueprints.size();
         this.totalPrice = calcTotalPrice(blueprints);
     }
@@ -83,7 +84,7 @@ public class Orders extends BaseEntity {
         }
     }
 
-    public static List<OrderBlueprint> getOrderItems(List<Orders> orders) {
+    public static List<OrderBlueprint> getOrderItems(List<Order> orders) {
         return orders.stream()
                 .flatMap(order -> order.getOrderItems().stream())
                 .toList();

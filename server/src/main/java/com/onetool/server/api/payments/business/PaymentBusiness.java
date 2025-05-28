@@ -1,6 +1,6 @@
 package com.onetool.server.api.payments.business;
 
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.Order;
 import com.onetool.server.api.order.service.OrderService;
 import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.dto.PaymentRequest;
@@ -25,8 +25,8 @@ public class PaymentBusiness {
 
     @Transactional(readOnly = true)
     public List<PaymentResponse> getPaymentList(Long userId) {
-        List<Orders> ordersList = orderService.findAllByUserId(userId);
-        return ordersList.stream()
+        List<Order> orderList = orderService.findAllByUserId(userId);
+        return orderList.stream()
                 .map(paymentService::findByOrders)
                 .filter(Objects::nonNull)
                 .map(PaymentResponse::from)
