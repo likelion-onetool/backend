@@ -25,7 +25,7 @@ public class PaymentBusiness {
 
     @Transactional(readOnly = true)
     public List<PaymentResponse> getPaymentList(Long userId) {
-        List<Order> orderList = orderService.findAllByUserId(userId);
+        List<Order> orderList = orderService.findAll(userId);
         return orderList.stream()
                 .map(paymentService::findByOrders)
                 .filter(Objects::nonNull)

@@ -5,17 +5,14 @@ import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.order.Order;
-import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.api.order.dto.response.MyPageOrderResponse;
 import com.onetool.server.api.order.service.OrderService;
 import com.onetool.server.global.annotation.Business;
-import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 import java.util.Set;
@@ -41,14 +38,14 @@ public class OrderBusiness {
     @Transactional
     public List<MyPageOrderResponse> getMyPageOrderResponseList(Long userId, Pageable pageable) {
         Member member = memberService.findOneWithCart(userId);
-        Page<Order> ordersList = orderService.findAllOrderByUserId(member.getId(), pageable);
+        Page<Order> ordersList = orderService.findAll(member.getId(), pageable);
         List<Blueprint> blueprintList = blueprintService.findAll();
         return MyPageOrderResponse.from(ordersList.getContent());
     }
 
     @Transactional
     public void removeOrder(Long orderId) {
-        Order order = orderService.findOrderById(orderId);
+        Order order = orderService.findOne(orderId);
         orderService.deleteOrder(order);
     }
 }
