@@ -1,0 +1,2 @@
+exclude com/onetool/server/data/*
+exclude com/onetool/server/global/auth

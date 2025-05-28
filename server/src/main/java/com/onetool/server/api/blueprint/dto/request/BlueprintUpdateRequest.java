@@ -5,7 +5,8 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record BlueprintRequest(
+public record BlueprintUpdateRequest(
+        Long id,
         String blueprintName,
         Long categoryId,
         Long standardPrice,
@@ -17,7 +18,9 @@ public record BlueprintRequest(
         LocalDateTime saleExpiredDate,
         String creatorName,
         String downloadLink,
-        String detailImage
+        String detailImage,
+        Long hits,
+        Boolean isDeleted
 ) {
 
 }

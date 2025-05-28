@@ -2,6 +2,8 @@ package com.onetool.server.api.blueprint.business;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.success.BlueprintDeleteSuccess;
+import com.onetool.server.api.blueprint.dto.success.BlueprintUpdateSuccess;
 import com.onetool.server.api.blueprint.service.BlueprintInspectionService;
 import com.onetool.server.global.annotation.Business;
 import jakarta.transaction.Transactional;
@@ -19,21 +21,18 @@ public class BlueprintInspectionBusiness {
 
     @Transactional
     public List<BlueprintResponse> getNotPassedBlueprintList(Pageable pageable) {
-
         Page<Blueprint> blueprintPage = blueprintInspectionService.findAllNotPassedBlueprintsWithPage(pageable);
-
-        List<BlueprintResponse> blueprintResponses = BlueprintResponse.fromBlueprintPageToResponseList(blueprintPage);
-        return blueprintResponses;
+        return BlueprintResponse.fromBlueprintPageToResponseList(blueprintPage);
     }
 
     @Transactional
-    public void editBlueprintWithApprove(Long blueprintId) {
+    public BlueprintUpdateSuccess editBlueprintWithApprove(Long blueprintId) {
         Blueprint blueprint = blueprintInspectionService.findBluePrintById(blueprintId);
-        blueprintInspectionService.updateBlueprintInspectionStatus(blueprint);
+        return blueprintInspectionService.updateBlueprintInspectionStatus(blueprint);
     }
 
     @Transactional
-    public void removeBlueprint(Long blueprintId) {
-        blueprintInspectionService.deleteBlueprintById(blueprintId);
+    public BlueprintDeleteSuccess removeBlueprint(Long blueprintId) {
+        return blueprintInspectionService.deleteBlueprintById(blueprintId);
     }
 }

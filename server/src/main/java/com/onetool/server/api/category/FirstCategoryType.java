@@ -8,12 +8,12 @@ import java.util.Arrays;
 
 @Getter
 public enum FirstCategoryType {
-    CATEGORY_BUILDING(1L, "building"),
-    CATEGORY_CIVIL(2L, "civil"),
-    CATEGORY_INTERIOR(3L, "interior"),
-    CATEGORY_MACHINE(4L, "machine"),
-    CATEGORY_ELECTRIC(5L, "electric"),
-    CATEGORY_ETC(6L, "etc");
+    CATEGORY_BUILDING(1L, "building"),  // 건축
+    CATEGORY_CIVIL(2L, "civil"),        // 토목
+    CATEGORY_INTERIOR(3L, "interior"),  // 인테리어
+    CATEGORY_MACHINE(4L, "machine"),    // 기계
+    CATEGORY_ELECTRIC(5L, "electric"),  // 전기
+    CATEGORY_ETC(6L, "etc");            // 기타
 
     private final Long categoryId;
     private final String type;

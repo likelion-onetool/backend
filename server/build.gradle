@@ -1,97 +1,162 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.1'
-	id 'io.spring.dependency-management' version '1.1.5'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'jacoco'
 }
 
 group = 'com.onetool'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.apache.httpcomponents:httpcore:4.3.2'
-	compileOnly 'org.projectlombok:lombok'
-	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.httpcomponents:httpcore:4.3.2'
+    compileOnly 'org.projectlombok:lombok'
+    //developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'org.springframework.security:spring-security-web:6.3.3'
-	implementation 'org.springframework.security:spring-security-config:6.3.3'
+    implementation 'org.springframework.security:spring-security-web:6.3.3'
+    implementation 'org.springframework.security:spring-security-config:6.3.3'
 
-	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
-	implementation 'io.jsonwebtoken:jjwt-gson:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-gson:0.12.6'
 
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.3.2'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.3.2'
 
-	testImplementation 'io.rest-assured:rest-assured:5.5.0'
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
-	implementation 'javax.mail:javax.mail-api:1.6.2'
-	implementation 'com.sun.mail:smtp:2.0.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+    implementation 'javax.mail:javax.mail-api:1.6.2'
+    implementation 'com.sun.mail:smtp:2.0.1'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'org.mockito:mockito-core:5.5.0'
-	testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
 
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
 
-	// 메일 전송 폼을 위해 사용
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    // 메일 전송 폼을 위해 사용
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
-	// Swagger
-	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+    // Swagger
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
+    testImplementation 'com.h2database:h2'
 
-	//redis createdAt 직렬화
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-	testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 processResources.dependsOn('copyModule')
 
 tasks.register('copyModule', Copy) {
-	copy {
-		from '../backend_submodule'
-		include '*.properties'
-		into './src/main/resources'
-	}
+    copy {
+        from '../backend_submodule'
+        include '*.properties'
+        into './src/main/resources'
+    }
+}
+
+def excludeClassesFromReport = new ArrayList<String>()
+file('jacoco-exclude-classes').withInputStream {
+    it ->
+        excludeClassesFromReport.addAll(new BufferedReader(new InputStreamReader(it))
+                .lines()
+                .map(s -> s.substring(7).strip())
+                .toList())
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.collect {
+            fileTree(dir: it, excludes: [
+                    "com/onetool/server/global/*",
+                    "com/onetool/server/data/*",
+                    "**/dto/*"
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+
+            excludes = [
+                    '*.global'
+            ]
+        }
+    }
+}
+
+task testAndGenerateReport {
+    group 'verification'
+    description 'test w/ jacoco'
+
+    dependsOn ':test', ':jacocoTestReport', ':jacocoTestCoverageVerification'
+
+    tasks.jacocoTestReport.mustRunAfter tasks.test
+    tasks.jacocoTestCoverageVerification.mustRunAfter tasks.jacocoTestReport
 }

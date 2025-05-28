@@ -7,9 +7,6 @@ import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
 import com.onetool.server.api.qna.service.QnaBoardService;
-import com.onetool.server.fixture.MemberFixture;
-import com.onetool.server.fixture.QnaBoardFixture;
-import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.MemberErrorCode;
 import org.junit.jupiter.api.Test;
@@ -17,16 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
-import static com.onetool.server.fixture.MemberFixture.*;
-import static com.onetool.server.fixture.QnaBoardFixture.*;
+import static com.onetool.server.api.fixture.MemberFixture.*;
+import static com.onetool.server.api.fixture.QnaBoardFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

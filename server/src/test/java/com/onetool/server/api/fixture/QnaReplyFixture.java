@@ -1,4 +1,4 @@
-package com.onetool.server.fixture;
+package com.onetool.server.api.fixture;
 
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.QnaBoard;

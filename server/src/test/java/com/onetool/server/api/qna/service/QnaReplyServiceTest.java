@@ -14,9 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.onetool.server.fixture.MemberFixture.*;
-import static com.onetool.server.fixture.QnaBoardFixture.*;
-import static com.onetool.server.fixture.QnaReplyFixture.*;
+import static com.onetool.server.api.fixture.MemberFixture.*;
+import static com.onetool.server.api.fixture.QnaBoardFixture.*;
+import static com.onetool.server.api.fixture.QnaReplyFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

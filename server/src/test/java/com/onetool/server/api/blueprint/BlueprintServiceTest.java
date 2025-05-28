@@ -1,4 +1,4 @@
-package com.onetool.server.blueprint;
+package com.onetool.server.api.blueprint;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;

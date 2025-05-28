@@ -1,6 +1,5 @@
 package com.onetool.server.api.cart.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.cart.business.CartBusiness;
@@ -42,12 +41,15 @@ public class CartControllerTest {
     private JwtUtil jwtUtil;
 
     private Member member;
+    private Cart cart;
 
     private final String cartEndpointPrefix = "/api/cart";
 
     @BeforeEach
     void setUp(){
         member = MemberFixture.createMember();
+        cart = Cart.createCart(member);
+        member.update(cart);
     }
 
     @Test
