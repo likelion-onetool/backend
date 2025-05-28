@@ -1,3 +1,4 @@
 [submodule "backend_submodule"]
 	path = backend_submodule
 	url = https://github.com/likelion-onetool/backend_submodule.git
+	branch = main

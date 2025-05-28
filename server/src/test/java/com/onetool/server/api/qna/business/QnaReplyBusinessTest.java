@@ -5,23 +5,18 @@ import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
 import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
-import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaBoardService;
 import com.onetool.server.api.qna.service.QnaReplyService;
-import com.onetool.server.fixture.MemberFixture;
-import com.onetool.server.fixture.QnaBoardFixture;
-import com.onetool.server.fixture.QnaReplyFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
-import static com.onetool.server.fixture.MemberFixture.*;
-import static com.onetool.server.fixture.QnaBoardFixture.*;
-import static com.onetool.server.fixture.QnaReplyFixture.*;
+import static com.onetool.server.api.fixture.MemberFixture.*;
+import static com.onetool.server.api.fixture.QnaBoardFixture.*;
+import static com.onetool.server.api.fixture.QnaReplyFixture.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -2,6 +2,8 @@ package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.success.BlueprintDeleteSuccess;
+import com.onetool.server.api.blueprint.dto.success.BlueprintUpdateSuccess;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
@@ -27,8 +29,7 @@ public class BlueprintInspectionService {
 
     @Transactional
     public Page<Blueprint> findAllNotPassedBlueprintsWithPage(Pageable pageable) {
-        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE, pageable);
-        return blueprintPage;
+        return blueprintRepository.findByInspectionStatus(InspectionStatus.NONE, pageable);
     }
 
     public Blueprint findBluePrintById(Long blueprintId) {
@@ -36,13 +37,15 @@ public class BlueprintInspectionService {
                 .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : "+ blueprintId));
     }
 
-    public void updateBlueprintInspectionStatus(Blueprint blueprint) {
+    public BlueprintUpdateSuccess updateBlueprintInspectionStatus(Blueprint blueprint) {
         validateBlueprintIsNull(blueprint);
         blueprint.approveBlueprint();
+        return BlueprintUpdateSuccess.of(true, blueprint.getId());
     }
 
-    public void deleteBlueprintById(Long id) {
+    public BlueprintDeleteSuccess deleteBlueprintById(Long id) {
         blueprintRepository.deleteById(id);
+        return BlueprintDeleteSuccess.of(true);
     }
 
     private void validateBlueprintIsNull(Blueprint blueprint) {

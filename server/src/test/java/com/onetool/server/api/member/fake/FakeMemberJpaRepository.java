@@ -67,10 +67,11 @@ public class FakeMemberJpaRepository implements MemberJpaRepository {
     }
 
     @Override
-    public Optional<Member> findByNameAndPhoneNum(String name, String phoneNum) {
+    public Optional<String> findByNameAndPhoneNum(String name, String phoneNum) {
         return store.values().stream()
                 .filter(m -> m.getName().equals(name) && m.getPhoneNum().equals(phoneNum))
-                .findFirst();
+                .findFirst()
+                .map(Member::getEmail);
     }
 
     @Override

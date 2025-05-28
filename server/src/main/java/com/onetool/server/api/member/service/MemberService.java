@@ -17,7 +17,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public Member findOne(String name, String phoneNumber) {
+    public String findOne(String name, String phoneNumber) {
         return memberRepository.findByNameAndPhoneNum(name, phoneNumber).orElseThrow(() ->
                 new ApiException(MemberErrorCode.NON_EXIST_USER, "이름과 비밀번호가 일치하는 회원이 존재하지 않습니다."));
     }

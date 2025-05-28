@@ -6,12 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: self-hosted
-
-    defaults:
-      run:
-        shell: bash
+  build-deploy:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Codes
@@ -28,6 +24,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+           gradle-version: '8.12'  
+
 
       - name: Setup and Config Docker Buildx
         uses: docker/setup-buildx-action@v2

@@ -44,8 +44,10 @@ public class CartBusinessTest {
     @BeforeEach
     public void setUp() {
         member = MemberFixture.createMember();
+        cart = Cart.createCart(member);
+        member.update(cart);
+
         blueprint = CartFixture.createBlueprint();
-        cart = member.getCart();
     }
 
     @Test

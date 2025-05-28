@@ -8,7 +8,7 @@ import com.onetool.server.api.qna.business.QnaBoardBusiness;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
-import com.onetool.server.fixture.MemberFixture;
+import com.onetool.server.api.fixture.MemberFixture;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static com.onetool.server.fixture.QnaBoardFixture.createQnaBoard;
-import static com.onetool.server.fixture.QnaBoardFixture.createQnaBoardDetailResponse;
+import static com.onetool.server.api.fixture.QnaBoardFixture.createQnaBoard;
+import static com.onetool.server.api.fixture.QnaBoardFixture.createQnaBoardDetailResponse;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
