@@ -108,6 +108,8 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://api.tosspayments.com");
         configuration.addAllowedOrigin("https://frontend-beta-two-45.vercel.app");
         configuration.addAllowedOrigin("http://frontend-beta-two-45.vercel.app");
+        configuration.addAllowedOrigin("https://onetoolcad.vercel.app");
+        configuration.addAllowedOrigin("http://onetoolcad.vercel.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
