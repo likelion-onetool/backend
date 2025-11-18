@@ -40,7 +40,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private static final String[] AUTH_WHITELIST = {
-            "/users/**", "/login/**", "/blueprint/**", "/actuator/**", "/silent-refresh", "/payments/**"
+            "/", "/users/**", "/login/**", "/blueprint/**", "/actuator/**", "/silent-refresh", "/payments/**"
             ,"/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html", "/chat/**", "/chatting/**"
     };
 
