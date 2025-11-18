@@ -21,6 +21,7 @@ import static com.onetool.server.global.util.CookieUtil.createRefreshTokenCookie
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class MemberLoginController {
 
     private final MemberLoginBusiness memberLoginBusiness;
