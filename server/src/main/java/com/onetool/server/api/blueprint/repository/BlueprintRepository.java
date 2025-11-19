@@ -49,13 +49,13 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
     Page<Blueprint> findAllByFirstCategory(@Param("first") Long categoryId, @Param("status") InspectionStatus status, Pageable pageable);
 
     @Query(value = """
-        SELECT b FROM Blueprint b
+        SELECT b.id, b.blueprintImg, b.creatorName, b.blueprintName, b.standardPrice, b.program FROM Blueprint b
         WHERE
             b.categoryId = :first
             AND b.secondCategory = :second
             AND b.inspectionStatus = :status
-       """,
-            countQuery = "SELECT count(b.id) FROM Blueprint b WHERE b.inspectionStatus = :status"
+            AND b.isDeleted = false
+       """
     )
     Page<Blueprint> findAllBySecondCategory(@Param("first") Long firstCategoryId, @Param("second") String secondCategory, @Param("status") InspectionStatus status, Pageable pageable);
 

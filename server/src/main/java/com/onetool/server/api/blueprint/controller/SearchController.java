@@ -34,7 +34,7 @@ public class SearchController {
     @GetMapping("/blueprint")
     public ApiResponse<Page<SearchResponse>> searchWithKeyword(
             @RequestParam("s") String keyword,
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         String decodedKeyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
         log.info("Decoded keyword: {}", decodedKeyword);
@@ -44,7 +44,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/building")
     public ApiResponse<Page<SearchResponse>> searchBuildingCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
@@ -53,7 +53,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/civil")
     public ApiResponse<Page<SearchResponse>> searchCivilCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
@@ -62,7 +62,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/interior")
     public ApiResponse<Page<SearchResponse>> searchInteriorCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
@@ -71,7 +71,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/machine")
     public ApiResponse<Page<SearchResponse>> searchMachineCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
@@ -80,7 +80,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/electric")
     public ApiResponse<Page<SearchResponse>> searchElectricCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
@@ -89,7 +89,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/etc")
     public ApiResponse<Page<SearchResponse>> searchEtcCategory(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
         return ApiResponse.onSuccess(responses);
@@ -97,7 +97,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/all")
     public ApiResponse<Page<SearchResponse>> searchAllBlueprint(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(pageable);
         return ApiResponse.onSuccess(responses);

@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
-@Table(indexes = {
-        @Index(name = "idx_blueprint_second_category", columnList = "categoryId, secondCategory, inspectionStatus, isDeleted, id DESC")
+@Table
+        (indexes = {
+        @Index(name = "idx_blueprint_second_category", columnList = "categoryId, secondCategory")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE Blueprint SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted = false")
+//@SQLRestriction("is_deleted = false")
 @Builder
 @AllArgsConstructor
 public class Blueprint extends BaseEntity {
