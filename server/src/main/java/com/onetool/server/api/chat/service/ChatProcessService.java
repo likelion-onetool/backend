@@ -18,7 +18,7 @@ public class ChatProcessService {
     private final ChatMessageQueue chatMessageQueue;
     private final ChatService chatService;
 
-    @Async
+    @Async("chatBatchExecutor")
     public void processMessageQueue() {
         List<ChatMessage> unpersistedMessages = chatMessageQueue.getUnpersistedMessages();
         if (unpersistedMessages.isEmpty()) {
