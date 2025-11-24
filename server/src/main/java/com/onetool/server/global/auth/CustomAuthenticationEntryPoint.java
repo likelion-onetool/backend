@@ -18,8 +18,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.info("Authentication Failed!!!!! {}", request.getRequestURI());
-        log.info(authException.getMessage());
+        log.debug("Authentication Failed: {}", request.getRequestURI());
+        log.debug(authException.getMessage());
         response.setStatus(HttpStatus.SC_BAD_REQUEST);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
