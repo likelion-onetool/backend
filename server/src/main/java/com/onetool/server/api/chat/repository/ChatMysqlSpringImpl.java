@@ -34,6 +34,6 @@ public class ChatMysqlSpringImpl implements ChatRepository {
 
     @Override
     public List<ChatMessage> findLatestMessages(Pageable pageable, String roomId) {
-        return delegate.findLatestMessages(roomId);
+        return delegate.findLatestMessages(pageable, roomId);
     }
 } 
