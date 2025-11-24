@@ -3,6 +3,7 @@ package com.onetool.server.api.chat.domain;
 import com.onetool.server.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @Setter
@@ -10,19 +11,13 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SequenceGenerator(
-        name = "CHAT_MESSAGE_SEQ_GENERATOR",
-        sequenceName = "CHAT_MESSAGE_SEQ",
-        initialValue = 1, allocationSize = 100
-)
 public class ChatMessage extends BaseEntity {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "CHAT_MESSAGE_SEQ_GENERATOR"
-    )
+    @GeneratedValue(generator = "tsid")
+    @GenericGenerator(name = "tsid", strategy = "com.onetool.server.api.chat.domain.ChatIdGenerator")
     private Long id;
+
     private boolean persisted;
     @Enumerated(EnumType.STRING)
     private MessageType type;
