@@ -1,14 +1,11 @@
 package com.onetool.server.api.chat.handler;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
-import com.onetool.server.api.chat.domain.ChatMessageQueue;
 import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.domain.MessageType;
-import com.onetool.server.api.chat.service.ChatProcessService;
 import com.onetool.server.api.chat.service.ChatService;
-import jakarta.annotation.PreDestroy;
+import com.onetool.server.api.chat.service.mq.ChatProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,12 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,8 +24,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
-    private final ChatProcessService chatProcessService;
-    private final ChatMessageQueue chatMessageQueue;
+    private final ChatProducerService chatProducerService;
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -51,12 +42,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             sendToEachSocket(sessions,new TextMessage(objectMapper.writeValueAsString(chatMessage)));
         } else {
             sendToEachSocket(sessions,message);
-        }
-
-        chatMessageQueue.addMessage(chatMessage);
-        if (chatMessageQueue.hasEnoughMessages()) {
-            log.info("MessageQueue Size: {}", chatMessageQueue.getQueueSize());
-            chatProcessService.processMessageQueue();
+            chatProducerService.sendMessage(chatMessage);
         }
     }
 
