@@ -87,6 +87,8 @@ dependencies {
     testImplementation "org.testcontainers:postgresql"
 
     implementation("io.hypersistence:hypersistence-tsid:2.1.4")
+
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 tasks.named('test') {
