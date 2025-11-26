@@ -41,7 +41,10 @@ class ChatServiceTest {
         Pageable pageable = PageRequest.of(0, 3);
 
         // when
-        List<ChatMessageResponse> response = chatService.findChatMessages(ROOM_ID);
+        List<ChatMessage> messages = chatService.findChatMessages(ROOM_ID);
+        List<ChatMessageResponse> response = messages.stream()
+                .map(ChatMessageResponse::from)
+                .toList();
 
         // then
         assertThat(response.size()).isEqualTo(3);
