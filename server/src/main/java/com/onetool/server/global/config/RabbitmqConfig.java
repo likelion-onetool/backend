@@ -1,5 +1,6 @@
 package com.onetool.server.global.config;
 
+import com.onetool.server.api.chat.domain.ChatRabbitMqNames;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -33,6 +34,21 @@ public class RabbitmqConfig {
     @Bean
     Binding binding(DirectExchange directExchange, Queue queue) {
         return BindingBuilder.bind(queue).to(directExchange).with("hello.key");
+    }
+
+    @Bean
+    DirectExchange chatExchange() {
+        return new DirectExchange(ChatRabbitMqNames.EXCHANGE);
+    }
+
+    @Bean
+    Queue chatQueue() {
+        return new Queue(ChatRabbitMqNames.QUEUE, false);
+    }
+
+    @Bean
+    Binding chatBinding(DirectExchange chatExchange, Queue chatQueue) {
+        return BindingBuilder.bind(chatQueue).to(chatExchange).with(ChatRabbitMqNames.ROUTING_KEY);
     }
 
     @Bean

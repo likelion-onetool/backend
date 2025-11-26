@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.domain.MessageType;
+import com.onetool.server.api.chat.service.ChatRecentMessageService;
 import com.onetool.server.api.chat.service.ChatService;
 import com.onetool.server.api.chat.service.mq.ChatProducerService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
     private final ChatProducerService chatProducerService;
+    private final ChatRecentMessageService chatRecentMessageService;
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -48,14 +51,31 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        session.sendMessage(new TextMessage("RoomId: " + ChatRoom.roomId));
+        String roomId = getRoomIdFromSession(session);
+        if (roomId != null) {
+            ChatRoom room = chatService.findRoomById(roomId);
+            room.getSessions().add(session); // 세션 추가
+            session.getAttributes().put("roomId", roomId);
+
+            ChatMessage chatMessage = ChatMessage.builder()
+                    .type(MessageType.ENTER)
+                    .roomId(roomId)
+                    .sender("SERVER")
+                    .message("Connection Established")
+                    .build();
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
+            chatRecentMessageService.getRecentMessages(roomId);
+        }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        ChatRoom room = chatService.findRoomById(ChatRoom.roomId);
-        Set<WebSocketSession> sessions = room.getSessions();
-        sessions.remove(session);
+        String roomId = (String) session.getAttributes().get("roomId");
+        if (roomId != null) {
+            ChatRoom room = chatService.findRoomById(roomId);
+            Set<WebSocketSession> sessions = room.getSessions();
+            sessions.remove(session);
+        }
     }
 
     private void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
@@ -67,5 +87,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private String getRoomIdFromSession(WebSocketSession session) {
+        String[] pathSegments = session.getUri().getPath().split("/");
+        if (pathSegments.length > 0) {
+            return pathSegments[pathSegments.length - 1];
+        }
+        return null;
     }
 }

@@ -65,40 +65,13 @@ public class ChatService {
         return chatMessageList.size();
     }
 
-    @Transactional
-    public void deleteExpiredChatMessages() {
-        LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
-        chatRepository.deleteExpiredChatMessagesBefore(cutoff);
-    }
-
     public ChatMessage createMessage(TextMessage message) throws JsonProcessingException {
         String payload = message.getPayload();
-        ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
-        return chatMessage;
+        return objectMapper.readValue(payload, ChatMessage.class);
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessageResponse> findChatMessages(final String roomId) {
-        Pageable limit = PageRequest.of(0, 50);
-
-        List<ChatMessage> dbMessages = chatRepository.findLatestMessages(limit, roomId);
-        List<ChatMessage> queueMessages = messageQueue.getQueuedMessages(roomId);
-
-        Map<Long, ChatMessage> mergedMap = new HashMap<>();
-
-        for (ChatMessage msg : dbMessages) {
-            mergedMap.put(msg.getId(), msg);
-        }
-
-        for (ChatMessage msg : queueMessages) {
-            mergedMap.put(msg.getId(), msg);
-        }
-
-        return mergedMap.values().stream()
-                .sorted(Comparator.comparing(ChatMessage::getCreatedAt)) // BaseEntity의 시간 기준
-                .toList()
-                .stream()
-                .map(ChatMessageResponse::from)
-                .collect(Collectors.toList());
+    public List<ChatMessage> findChatMessages(final String roomId) {
+        return chatRepository.findLatestMessages(roomId);
     }
 }

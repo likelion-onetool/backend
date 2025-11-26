@@ -15,7 +15,5 @@ public interface ChatRepository {
 
     List<ChatMessage> saveAll(List<ChatMessage> chatMessages);
 
-    void deleteExpiredChatMessagesBefore(LocalDateTime cutoff);
-
-    List<ChatMessage> findLatestMessages(Pageable pageable, String roomId);
+    List<ChatMessage> findLatestMessages(String roomId);
 }

@@ -32,6 +32,7 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ChatService chatService;
     private final ChatJpaRepository chatRepository;
+    private ChatRoom publicChatRoom;
 
     public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, ChatService chatService, ChatJpaRepository chatRepository) {
         this.firstCategoryRepository = firstCategoryRepository;
@@ -58,15 +59,14 @@ public class DataLoader implements CommandLineRunner {
                 .message(message)
                 .sender(sender)
                 .type(type)
-                .roomId(ChatRoom.roomId)
+                .roomId(publicChatRoom.getRoomId())
                 .build();
         chatRepository.save(chatMessage);
     }
 
     private void createChatRoom() {
-
-        ChatRoom publicChat = chatService.createRoom("Public Chat");
-        log.info("roomId : {}",ChatRoom.roomId);
+        publicChatRoom = chatService.createRoom("Public Chat");
+        log.info("roomId : {}", publicChatRoom.getRoomId());
     }
 
     private void createDummyData() {

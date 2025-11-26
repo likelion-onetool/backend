@@ -31,12 +31,7 @@ public class ChatPostgresRepositoryImpl implements ChatRepository {
     }
 
     @Override
-    public void deleteExpiredChatMessagesBefore(LocalDateTime cutoff) {
-        delegate.deleteByCreatedAtBefore(cutoff);
-    }
-
-    @Override
-    public List<ChatMessage> findLatestMessages(Pageable pageable, String roomId) {
+    public List<ChatMessage> findLatestMessages(String roomId) {
         return delegate.findByRoomIdOrderByCreatedAtDesc(roomId);
     }
-} 
+}

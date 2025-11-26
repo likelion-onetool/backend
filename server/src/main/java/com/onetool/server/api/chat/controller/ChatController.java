@@ -35,11 +35,9 @@ public class ChatController {
 
     @GetMapping("/chat/list")
     public List<ChatMessageResponse> getChatMessages(@RequestParam String roomId) {
-        return chatService.findChatMessages(roomId);
-    }
-
-    @Scheduled(cron = "0 32 9 * * *")
-    public void deleteExpiredChatMessagesScheduled() {
-        chatService.deleteExpiredChatMessages();
+        List<ChatMessage> chatMessages = chatService.findChatMessages(roomId);
+        return chatMessages.stream()
+                .map(ChatMessageResponse::from)
+                .toList();
     }
 }

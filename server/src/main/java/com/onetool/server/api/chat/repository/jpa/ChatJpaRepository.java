@@ -20,6 +20,5 @@ public interface ChatJpaRepository extends JpaRepository<ChatMessage, Long> {
     @Query(value = "DELETE FROM chat_message WHERE created_at < :cutoff", nativeQuery = true)
     void deleteExpiredChatMessagesBefore(@Param("cutoff") LocalDateTime cutoff);
 
-    @Query("SELECT c FROM ChatMessage c WHERE c.roomId = :roomId ORDER BY c.createdAt DESC")
-    List<ChatMessage> findLatestMessages(Pageable pageable, @Param("roomId") String roomId);
+    List<ChatMessage> findTop50ByRoomIdOrderByCreatedAtDesc(String roomId);
 }

@@ -28,12 +28,7 @@ public class ChatMysqlSpringImpl implements ChatRepository {
     }
 
     @Override
-    public void deleteExpiredChatMessagesBefore(LocalDateTime cutoff) {
-        delegate.deleteExpiredChatMessagesBefore(cutoff);
-    }
-
-    @Override
-    public List<ChatMessage> findLatestMessages(Pageable pageable, String roomId) {
-        return delegate.findLatestMessages(pageable, roomId);
+    public List<ChatMessage> findLatestMessages(String roomId) {
+        return delegate.findTop50ByRoomIdOrderByCreatedAtDesc(roomId);
     }
 } 

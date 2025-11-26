@@ -1,18 +1,19 @@
 package com.onetool.server.api.chat.domain;
 
-import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
+@Setter
 public class ChatRoom {
 
-    public static String roomId;
+    private String roomId;
     private String name;
     private Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
 
@@ -20,5 +21,10 @@ public class ChatRoom {
     public ChatRoom(String roomId, String name) {
         this.roomId = roomId;
         this.name = name;
+    }
+
+    public static ChatRoom create(String name) {
+        String roomId = UUID.randomUUID().toString();
+        return new ChatRoom(roomId, name);
     }
 }

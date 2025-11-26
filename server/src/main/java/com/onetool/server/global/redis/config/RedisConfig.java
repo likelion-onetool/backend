@@ -34,6 +34,9 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory2() {return createRedis(2);}
 
     @Bean
+    public RedisConnectionFactory redisConnectionFactory3() {return createRedis(3);}
+
+    @Bean
     public RedisTemplate<String, Object> mailRedisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -57,6 +60,15 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory2());
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, String> chatRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
     }
 
