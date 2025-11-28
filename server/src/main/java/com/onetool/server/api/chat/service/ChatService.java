@@ -3,24 +3,20 @@ package com.onetool.server.api.chat.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
-import com.onetool.server.api.chat.domain.ChatMessageQueue;
 import com.onetool.server.api.chat.domain.ChatRoom;
-import com.onetool.server.api.chat.dto.ChatMessageResponse;
 import com.onetool.server.api.chat.repository.ChatRepository;
-import groovy.util.logging.Slf4j;
+import com.onetool.server.global.redis.config.RedisConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
@@ -28,7 +24,11 @@ public class ChatService {
     private final ObjectMapper objectMapper;
     private Map<String, ChatRoom> chatRooms;
     private final ChatRepository chatRepository;
-    private final ChatMessageQueue messageQueue;
+
+    // Redis Topic 관련 의존성 추가
+    private final RedisMessageListenerContainer redisContainer;
+    private final MessageListenerAdapter messageListener;
+    private final RedisConfig redisConfig;
 
     @PostConstruct
     private void init() {
@@ -40,7 +40,8 @@ public class ChatService {
     }
 
     public ChatRoom findRoomById(String roomId) {
-        return chatRooms.get(roomId);
+        // 채팅방이 없으면 새로 생성
+        return chatRooms.computeIfAbsent(roomId, id -> ChatRoom.builder().roomId(id).build());
     }
 
     public ChatRoom createRoom(String name) {
@@ -53,25 +54,40 @@ public class ChatService {
         return chatRoom;
     }
 
-    @Transactional
-    public Long saveTextMessage(ChatMessage chatMessage) {
-        ChatMessage savedChatMessage = chatRepository.save(chatMessage);
-        return savedChatMessage.getId();
-    }
-
-    @Transactional
-    public int saveAllTextMessage(List<ChatMessage> chatMessages) {
-        List<ChatMessage> chatMessageList = chatRepository.saveAll(chatMessages);
-        return chatMessageList.size();
-    }
-
     public ChatMessage createMessage(TextMessage message) throws JsonProcessingException {
         String payload = message.getPayload();
         return objectMapper.readValue(payload, ChatMessage.class);
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessage> findChatMessages(final String roomId) {
+    public List<ChatMessage> findLatestMessages(final String roomId) {
         return chatRepository.findLatestMessages(roomId);
+    }
+
+    /**
+     * Redis Topic 구독 추가
+     */
+    public void addSubscriber(String roomId) {
+        redisConfig.addTopic(roomId, redisContainer, messageListener);
+    }
+
+    /**
+     * 채팅방에 사용자 추가
+     */
+    public void addUserToRoom(String roomId, WebSocketSession session) {
+        ChatRoom room = findRoomById(roomId);
+        room.getSessions().add(session);
+        session.getAttributes().put("roomId", roomId);
+    }
+
+    /**
+     * 채팅방에서 사용자 제거
+     */
+    public void removeUserFromRoom(WebSocketSession session) {
+        String roomId = (String) session.getAttributes().get("roomId");
+        if (roomId != null) {
+            ChatRoom room = findRoomById(roomId);
+            room.getSessions().remove(session);
+        }
     }
 }

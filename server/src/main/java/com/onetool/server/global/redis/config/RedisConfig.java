@@ -1,5 +1,6 @@
 package com.onetool.server.global.redis.config;
 
+import com.onetool.server.api.chat.service.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,14 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Configuration
@@ -18,6 +25,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
+    private final Map<String, ChannelTopic> topics = new HashMap<>();
 
     @Bean
     @Primary
@@ -35,6 +43,9 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory3() {return createRedis(3);}
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory4() {return createRedis(4);}
 
     @Bean
     public RedisTemplate<String, Object> mailRedisTemplate() {
@@ -70,6 +81,26 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(
+            RedisConnectionFactory connectionFactory,
+            MessageListenerAdapter messageListener
+    ) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+
+    @Bean
+    public MessageListenerAdapter messageListener(RedisSubscriber subscriber) {
+        return new MessageListenerAdapter(subscriber, "onMessage");
+    }
+
+    public void addTopic(String roomId, RedisMessageListenerContainer container, MessageListenerAdapter messageListener) {
+        ChannelTopic topic = topics.computeIfAbsent(roomId, ChannelTopic::new);
+        container.addMessageListener(messageListener, topic);
     }
 
     private LettuceConnectionFactory createRedis(int index) {

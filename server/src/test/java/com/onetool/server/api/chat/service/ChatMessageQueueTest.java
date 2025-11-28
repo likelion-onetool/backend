@@ -1,36 +1,28 @@
 package com.onetool.server.api.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetool.server.api.chat.domain.ChatMessage;
-import com.onetool.server.api.chat.domain.ChatMessageQueue;
 import com.onetool.server.api.chat.domain.ChatRoom;
-import com.onetool.server.api.chat.domain.MessageType;
-import com.onetool.server.api.chat.handler.TestChatWebSocketHandler;
 import com.onetool.server.api.chat.repository.ChatRepository;
 import org.junit.jupiter.api.*;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class ChatMessageQueueTest {
 
-    @Autowired
-    private TestChatWebSocketHandler chatWebSocketHandler;
+//    @Autowired
+//    private TestChatWebSocketHandler chatWebSocketHandler;
 
     @Autowired
     private ChatService chatService;
