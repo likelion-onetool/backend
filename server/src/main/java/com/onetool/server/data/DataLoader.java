@@ -14,7 +14,9 @@ import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,8 @@ import java.math.BigInteger;
 @Profile({"dev", "default", "local"})
 @Component
 @Slf4j
-public class DataLoader implements CommandLineRunner {
+@ConditionalOnProperty(name = "data.loader.enabled", havingValue = "true")
+public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     private final FirstCategoryRepository firstCategoryRepository;
     private final BlueprintRepository blueprintRepository;
@@ -44,8 +47,8 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        if(memberJpaRepository.count() == 0) {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        if(!memberJpaRepository.existsByEmail("admin@admin.com")) {
             createDummyData();
         }
         createChatRoom();

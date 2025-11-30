@@ -5,7 +5,9 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategoryRepository;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,9 @@ import java.math.BigInteger;
 
 @Profile({"local"})
 @Component
-public class DummyDataLoader implements CommandLineRunner {
+@ConditionalOnProperty(name = "dummy.data.loader.enabled", havingValue = "true")
+public class DummyDataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final static boolean EXECUTE_FLAG = false;
     private final static int DUMMY_DATA_COUNT = 1_000_000;
 
     private final static String[] BLUEPRINT_NAME_LIST = {"골프장 ", "당구장 ", "학교 ", "영화관 ", "도서관 ", "학교 ", "상가 ", "전시관", "역사관 ", "식당 "};
@@ -44,10 +46,8 @@ public class DummyDataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        if(EXECUTE_FLAG) {
-            createDummyData();
-        }
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        createDummyData();
     }
 
     private void createDummyData() {

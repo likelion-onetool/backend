@@ -25,7 +25,8 @@ public class RedisPublisher {
             String message = objectMapper.writeValueAsString(chatMessage);
             redisTemplate.convertAndSend("chat-room:" + chatMessage.getRoomId(), message);
         } catch (JsonProcessingException e) {
-            log.error("Error serializing chat message", e);
+            log.error("Error serializing chat message for publishing", e);
+            throw new RuntimeException("Failed to serialize chat message", e);
         }
     }
 }
