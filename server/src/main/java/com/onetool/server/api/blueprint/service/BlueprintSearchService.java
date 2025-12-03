@@ -27,22 +27,6 @@ public class BlueprintSearchService {
                 .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : "+id));
     }
 
-    public List<Blueprint> fetchAllWithOrderBlueprints(Page<Blueprint> blueprintPage) {
-        if (blueprintPage == null) {
-            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"Blueprint가 NULL입니다.");
-        }
-
-        return blueprintRepository.findWithOrderBlueprints(blueprintPage.getContent());
-    }
-
-    public List<Blueprint> fetchAllWithCartBlueprints(List<Blueprint> blueprints) {
-        if (blueprints == null) {
-            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"blueprints가 NULL입니다.");
-        }
-
-        return blueprintRepository.findWithCartBlueprints(blueprints);
-    }
-
     public Page<Blueprint> findAllByPassed(Pageable pageable) {
         if (pageable == null) {
             throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"pageable이 NULL입니다.");
