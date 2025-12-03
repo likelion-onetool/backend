@@ -6,14 +6,15 @@ import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategory;
 import com.onetool.server.api.category.FirstCategoryRepository;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Profile("test")
 @Component
-public class TestDataLoader implements CommandLineRunner {
+public class TestDataLoader implements ApplicationListener<ApplicationReadyEvent> {
     private final BlueprintRepository blueprintRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
@@ -27,7 +28,7 @@ public class TestDataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
 
         FirstCategory buildingCategory = firstCategoryRepository.save(
                 FirstCategory.builder()

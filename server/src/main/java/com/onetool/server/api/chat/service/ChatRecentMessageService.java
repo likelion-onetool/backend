@@ -49,7 +49,7 @@ public class ChatRecentMessageService {
                     .toList();
         }
 
-        List<ChatMessage> fromDb = chatService.findChatMessages(roomId);
+        List<ChatMessage> fromDb = chatService.findLatestMessages(roomId);
 
         if (!fromDb.isEmpty()) {
             List<String> jsons = fromDb.stream().map(m -> {

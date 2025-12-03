@@ -35,7 +35,7 @@ public class ChatController {
 
     @GetMapping("/chat/list")
     public List<ChatMessageResponse> getChatMessages(@RequestParam String roomId) {
-        List<ChatMessage> chatMessages = chatService.findChatMessages(roomId);
+        List<ChatMessage> chatMessages = chatService.findLatestMessages(roomId);
         return chatMessages.stream()
                 .map(ChatMessageResponse::from)
                 .toList();
