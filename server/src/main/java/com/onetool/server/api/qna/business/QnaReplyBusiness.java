@@ -9,11 +9,8 @@ import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaBoardService;
 import com.onetool.server.api.qna.service.QnaReplyService;
 import com.onetool.server.global.annotation.Business;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-
-import java.security.Principal;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Business
 @RequiredArgsConstructor
@@ -32,17 +29,17 @@ public class QnaReplyBusiness {
     }
 
     @Transactional
-    public void removeQnaReply(String email, Long qnaId, ModifyQnaReplyRequest request) {
+    public void removeQnaReply(String email, Long qnaId, Long replyId) {
         Member member = memberService.findOne(email);
-        QnaBoard qnaBoard =qnaBoardService.fetchWithQnaReply(qnaId);
-        QnaReply qnaReply = qnaReplyService.fetchWithBoardAndMember(request.replyId());
+        QnaBoard qnaBoard = qnaBoardService.fetchWithQnaReply(qnaId);
+        QnaReply qnaReply = qnaReplyService.fetchWithBoardAndMember(replyId);
         qnaReplyService.deleteQnaReply(member, qnaBoard, qnaReply);
     }
 
     @Transactional
-    public void updateQnaReply(String email, Long qnaId, ModifyQnaReplyRequest request) {
+    public void updateQnaReply(String email, Long qnaId, Long replyId, ModifyQnaReplyRequest request) {
         Member member = memberService.findOne(email);
-        QnaReply qnaReply = qnaReplyService.fetchWithBoardAndMember(request.replyId());
+        QnaReply qnaReply = qnaReplyService.fetchWithBoardAndMember(replyId);
         qnaReplyService.updateQnaReply(member, request.content(), qnaReply);
     }
 }
