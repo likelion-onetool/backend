@@ -113,8 +113,7 @@ class QnaBoardControllerTest extends MockBeanInjection {
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                post("/qna/{qnaId}/delete", qnaId)
-                        .contentType(MediaType.APPLICATION_JSON)
+                delete("/qna/{qnaId}", qnaId)
                         .with(csrf())
         );
 
@@ -129,11 +128,11 @@ class QnaBoardControllerTest extends MockBeanInjection {
     void 질문을_갱신한다() throws Exception {
         // ✅ Given (설정)
         Long qnaId = 2L;
-        PostQnaBoardRequest request = mock(PostQnaBoardRequest.class);
+        PostQnaBoardRequest request = new PostQnaBoardRequest("수정된 제목", "수정된 내용", "수정된 작성자");
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                get("/qna/{qnaId}/update", qnaId)
+                patch("/qna/{qnaId}", qnaId)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())

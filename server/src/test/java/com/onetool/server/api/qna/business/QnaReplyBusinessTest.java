@@ -56,23 +56,16 @@ class QnaReplyBusinessTest {
         Member member = createMember(1L);
         QnaBoard qnaBoard = createQnaBoard(1L, member);
         QnaReply qnaReply = createQnaReply(1L, member, qnaBoard);
-        ModifyQnaReplyRequest request = mock(ModifyQnaReplyRequest.class);
 
         when(memberService.findOne("user1@example.com")).thenReturn(member);
         when(qnaBoardService.fetchWithQnaReply(1L)).thenReturn(qnaBoard);
         when(qnaReplyService.fetchWithBoardAndMember(1L)).thenReturn(qnaReply);
-        when(request.replyId()).thenReturn(1L);
+
         // ✅ When (실행)
-        qnaReplyBusiness.removeQnaReply("user1@example.com",1L,request);
+        qnaReplyBusiness.removeQnaReply("user1@example.com",1L, 1L);
 
         // ✅ Then (검증)
         verify(qnaReplyService, times(1)).deleteQnaReply(member, qnaBoard, qnaReply);
-    }
-
-    public void updateQnaReply2(String email, Long qnaId, ModifyQnaReplyRequest request) {
-        Member member = memberService.findOne(email);
-        QnaReply qnaReply = qnaReplyService.fetchWithBoardAndMember(request.replyId());
-        qnaReplyService.updateQnaReply(member, request.content(), qnaReply);
     }
 
     @Test
@@ -84,12 +77,11 @@ class QnaReplyBusinessTest {
         ModifyQnaReplyRequest request = mock(ModifyQnaReplyRequest.class);
 
         when(memberService.findOne("user1@example.com")).thenReturn(member);
-        when(request.replyId()).thenReturn(1L);
         when(request.content()).thenReturn("테스트수정응답");
         when(qnaReplyService.fetchWithBoardAndMember(1L)).thenReturn(qnaReply);
 
         // ✅ When (실행)
-        qnaReplyBusiness.updateQnaReply("user1@example.com",1L,request);
+        qnaReplyBusiness.updateQnaReply("user1@example.com",1L, 1L, request);
 
         // ✅ Then (검증)
         verify(qnaReplyService,times(1)).updateQnaReply(member,request.content(),qnaReply);

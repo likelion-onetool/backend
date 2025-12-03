@@ -66,13 +66,11 @@ class QnaReplyControllerTest extends MockBeanInjection {
     void 응답을_삭제합니다() throws Exception {
         // ✅ Given (설정)
         Long qnaId = 1L;
-        ModifyQnaReplyRequest request = mock(ModifyQnaReplyRequest.class);
+        Long replyId = 1L;
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                delete("/qna/{qnaId}/reply", qnaId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
+                delete("/qna/{qnaId}/reply/{replyId}", qnaId, replyId)
                         .with(csrf())
         );
 
@@ -87,11 +85,12 @@ class QnaReplyControllerTest extends MockBeanInjection {
     void 응답을_갱신한다() throws Exception{
         // ✅ Given (설정)
         Long qnaId = 1L;
-        ModifyQnaReplyRequest request = mock(ModifyQnaReplyRequest.class);
+        Long replyId = 1L;
+        ModifyQnaReplyRequest request = new ModifyQnaReplyRequest(replyId, "수정된 댓글 내용");
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                patch("/qna/{qnaId}/reply", qnaId)
+                patch("/qna/{qnaId}/reply/{replyId}", qnaId, replyId)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
