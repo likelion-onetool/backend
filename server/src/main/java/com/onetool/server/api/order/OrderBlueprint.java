@@ -24,7 +24,7 @@ public class OrderBlueprint extends BaseEntity {
     @JoinColumn(name = "blueprint_id")
     private Blueprint blueprint;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
     private Orders order;
 
