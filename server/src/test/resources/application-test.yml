@@ -1,16 +1,20 @@
 logging:
   level:
-    root: info
-    org:
-      hibernate:
-        type: trace
+    root: INFO
+    org.hibernate.SQL: DEBUG # 실행되는 SQL 쿼리 로그
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL 파라미터 로그
+
 spring:
   jpa:
+    show-sql: true # SQL을 콘솔에 출력
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true # SQL을 보기 좋게 정렬
+        default_batch_fetch_size: 100
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb

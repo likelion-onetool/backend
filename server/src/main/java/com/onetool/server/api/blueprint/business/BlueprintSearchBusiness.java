@@ -24,10 +24,8 @@ public class BlueprintSearchBusiness {
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(String keyword, Pageable pageable) {
         Page<Blueprint> blueprintPage = blueprintSearchService.findAllByPassed(keyword, pageable);
-        List<Blueprint> withOrderBlueprints = blueprintSearchService.fetchAllWithOrderBlueprints(blueprintPage);
-        List<Blueprint> withCartBlueprints = blueprintSearchService.fetchAllWithCartBlueprints(withOrderBlueprints);
 
-        return makeBlueprintPage(pageable, withCartBlueprints, blueprintPage);
+        return makeBlueprintPage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
