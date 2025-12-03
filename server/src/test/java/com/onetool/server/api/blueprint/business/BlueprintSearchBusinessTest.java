@@ -47,8 +47,6 @@ class BlueprintSearchBusinessTest {
         Page<Blueprint> blueprintPage = new PageImpl<>(List.of(blueprint1, blueprint2));
 
         when(service.findAllByPassed(keyword, pageable)).thenReturn(blueprintPage);
-        when(service.fetchAllWithOrderBlueprints(blueprintPage)).thenReturn(List.of(blueprint1, blueprint2));
-        when(service.fetchAllWithCartBlueprints(List.of(blueprint1, blueprint2))).thenReturn(List.of(blueprint1, blueprint2));
 
         Page<SearchResponse> mockPage = mock(Page.class);
 
@@ -57,7 +55,5 @@ class BlueprintSearchBusinessTest {
 
         // then
         verify(service, times(1)).findAllByPassed(keyword, pageable);
-        verify(service, times(1)).fetchAllWithOrderBlueprints(blueprintPage);
-        verify(service, times(1)).fetchAllWithCartBlueprints(List.of(blueprint1, blueprint2));
     }
 }
