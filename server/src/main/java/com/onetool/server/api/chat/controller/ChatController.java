@@ -7,6 +7,8 @@ import com.onetool.server.api.chat.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Operation(summary = "채팅방 조회 API", description = "특정 채팅방의 정보를 조회합니다.")
     @GetMapping("/chatroom")
@@ -38,11 +41,17 @@ public class ChatController {
     }
 
     @Operation(summary = "채팅 메시지 목록 조회 API", description = "특정 채팅방의 최근 메시지 목록을 조회합니다.")
-    @GetMapping("/chat/list")
+    @GetMapping("/list")
     public List<ChatMessageResponse> getChatMessages(@RequestParam String roomId) {
         List<ChatMessage> chatMessages = chatService.findLatestMessages(roomId);
         return chatMessages.stream()
                 .map(ChatMessageResponse::from)
                 .toList();
+    }
+
+    @MessageMapping("/message")
+    public void sendMessage(ChatMessage chatMessage) {
+        chatService.saveMessage(chatMessage);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
     }
 }

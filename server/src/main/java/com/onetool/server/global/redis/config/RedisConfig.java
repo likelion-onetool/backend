@@ -1,6 +1,6 @@
 package com.onetool.server.global.redis.config;
 
-import com.onetool.server.api.chat.service.redis.RedisSubscriber;
+import com.onetool.server.api.chat.service.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,16 +16,12 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RequiredArgsConstructor
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
-    private final Map<String, ChannelTopic> topics = new HashMap<>();
 
     @Bean
     @Primary
@@ -79,17 +75,19 @@ public class RedisConfig {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer()); // 직렬화 방식 통일
         redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(
-            RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter messageListener
-    ) {
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+                                                        MessageListenerAdapter messageListener,
+                                                        ChannelTopic chatTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(messageListener, chatTopic);
         return container;
     }
 
@@ -98,11 +96,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
-    public void addTopic(String roomId, RedisMessageListenerContainer container, MessageListenerAdapter messageListener) {
-        ChannelTopic topic = topics.computeIfAbsent(roomId, ChannelTopic::new);
-        container.addMessageListener(messageListener, topic);
+    @Bean
+    public ChannelTopic chatTopic() {
+        return new ChannelTopic("chat");
     }
-
+    
     private LettuceConnectionFactory createRedis(int index) {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisProperties.getHost());

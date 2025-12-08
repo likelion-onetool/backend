@@ -1,27 +1,25 @@
 package com.onetool.server.api.chat.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.data.redis.core.RedisHash;
 
-import java.util.Set;
+import java.io.Serializable;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @Setter
-public class ChatRoom {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@RedisHash("chat_room")
+public class ChatRoom implements Serializable {
 
     private String roomId;
     private String name;
-    private Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
-
-    @Builder
-    public ChatRoom(String roomId, String name) {
-        this.roomId = roomId;
-        this.name = name;
-    }
 
     public static ChatRoom create(String name) {
         String roomId = UUID.randomUUID().toString();
