@@ -1,6 +1,7 @@
 package com.onetool.server.global.redis.config;
 
-import com.onetool.server.api.chat.service.redis.RedisSubscriber;
+import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.service.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +15,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,7 +24,6 @@ import java.util.Map;
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
-    private final Map<String, ChannelTopic> topics = new HashMap<>();
 
     @Bean
     @Primary
@@ -75,21 +73,23 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, String> chatRedisTemplate() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+    public RedisTemplate<String, Object> chatRedisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory3());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer()); // For List operations
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRoom.class)); // For Hash operations
         return redisTemplate;
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(
-            RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter messageListener
-    ) {
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+                                                        MessageListenerAdapter messageListener,
+                                                        ChannelTopic chatTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(messageListener, chatTopic);
         return container;
     }
 
@@ -98,11 +98,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
-    public void addTopic(String roomId, RedisMessageListenerContainer container, MessageListenerAdapter messageListener) {
-        ChannelTopic topic = topics.computeIfAbsent(roomId, ChannelTopic::new);
-        container.addMessageListener(messageListener, topic);
+    @Bean
+    public ChannelTopic chatTopic() {
+        return new ChannelTopic("chat");
     }
-
+    
     private LettuceConnectionFactory createRedis(int index) {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisProperties.getHost());

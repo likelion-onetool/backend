@@ -3,19 +3,20 @@ package com.onetool.server.api.chat.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.data.redis.core.RedisHash;
 
-import java.util.Set;
+import java.io.Serializable;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @Setter
-public class ChatRoom {
+@RedisHash("chat_room")
+public class ChatRoom implements Serializable {
+
+    private static final long serialVersionUID = 6494678977089006639L;
 
     private String roomId;
     private String name;
-    private Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
 
     @Builder
     public ChatRoom(String roomId, String name) {
