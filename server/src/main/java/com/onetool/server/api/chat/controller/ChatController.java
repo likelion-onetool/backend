@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Operation(summary = "채팅방 조회 API", description = "특정 채팅방의 정보를 조회합니다.")
     @GetMapping("/chatroom")
@@ -50,6 +52,6 @@ public class ChatController {
     @MessageMapping("/message")
     public void sendMessage(ChatMessage chatMessage) {
         chatService.saveMessage(chatMessage);
-        chatService.publishMessage(chatMessage);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
     }
 }

@@ -7,6 +7,7 @@ import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.repository.ChatRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -20,13 +21,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatService {
 
     private final ObjectMapper objectMapper;
     private final ChatRepository chatRepository;
     private final ChannelTopic chatTopic;
 
-    private final RedisTemplate<String, Object> chatRedisTemplate;
+    private final RedisTemplate<String, String> chatRedisTemplate;
     private HashOperations<String, String, String> opsHashChatRoom;
     private static final String CHAT_ROOMS = "CHAT_ROOM";
 
@@ -44,16 +46,19 @@ public class ChatService {
                 opsHashChatRoom.put(CHAT_ROOMS, "1", objectMapper.writeValueAsString(defaultChatRoom));
             }
         } catch (JsonProcessingException e) {
-            // 로깅 필요
+            log.error("기본 채팅방 생성에 실패했습니다.", e);
         }
     }
 
     public List<ChatRoom> findAllRoom() {
         return opsHashChatRoom.values(CHAT_ROOMS).stream().map(room -> {
             try {
-                return objectMapper.readValue(room, ChatRoom.class);
+                // 이중으로 직렬화된 JSON을 처리하기 위해, 먼저 내부 JSON 문자열을 추출
+                String innerJson = objectMapper.readValue(room, String.class);
+                // 추출된 JSON 문자열을 실제 ChatRoom 객체로 변환
+                return objectMapper.readValue(innerJson, ChatRoom.class);
             } catch (JsonProcessingException e) {
-                // 로깅 필요
+                log.error("채팅방 목록 조회에 실패했습니다.", e);
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
@@ -62,9 +67,11 @@ public class ChatService {
     public ChatRoom findRoomById(String roomId) {
         try {
             String roomJson = opsHashChatRoom.get(CHAT_ROOMS, roomId);
-            return objectMapper.readValue(roomJson, ChatRoom.class);
-        } catch (JsonProcessingException e) {
-            // 로깅 필요
+            // findRoomById도 이중 직렬화 문제를 겪을 수 있으므로 동일하게 수정
+            String innerJson = objectMapper.readValue(roomJson, String.class);
+            return objectMapper.readValue(innerJson, ChatRoom.class);
+        } catch (JsonProcessingException | IllegalArgumentException e) {
+            log.error("ID로 채팅방을 찾는데 실패했습니다.", e);
             return null;
         }
     }
@@ -78,7 +85,7 @@ public class ChatService {
         try {
             opsHashChatRoom.put(CHAT_ROOMS, randomId, objectMapper.writeValueAsString(chatRoom));
         } catch (JsonProcessingException e) {
-            // 로깅 필요
+            log.error("채팅방 생성에 실패했습니다.", e);
         }
         return chatRoom;
     }
@@ -92,23 +99,24 @@ public class ChatService {
             chatRedisTemplate.opsForList().leftPush("chat:room:" + chatMessage.getRoomId(), messageJson);
             chatRedisTemplate.opsForList().trim("chat:room:" + chatMessage.getRoomId(), 0, 199);
         } catch (JsonProcessingException e) {
-            // 로깅 필요
+            log.error("메시지 저장에 실패했습니다.", e);
         }
     }
     
     public void publishMessage(ChatMessage chatMessage) {
+        log.info("수신된 채팅 메시지: {}", chatMessage.getMessage());
         try {
             String messageJson = objectMapper.writeValueAsString(chatMessage);
             chatRedisTemplate.convertAndSend(chatTopic.getTopic(), messageJson);
         } catch (JsonProcessingException e) {
-            // 로깅 필요
+            log.error("메시지 발행에 실패했습니다.", e);
         }
     }
 
     @Transactional(readOnly = true)
     public List<ChatMessage> findLatestMessages(final String roomId) {
         // Redis에서 최근 메시지 200개 가져오기
-        List<Object> messageJsonList = chatRedisTemplate.opsForList().range("chat:room:" + roomId, 0, 199);
+        List<String> messageJsonList = chatRedisTemplate.opsForList().range("chat:room:" + roomId, 0, 199);
 
         if (messageJsonList == null) {
             return List.of();
@@ -118,9 +126,9 @@ public class ChatService {
         return messageJsonList.stream()
                 .map(messageJson -> {
                     try {
-                        return objectMapper.readValue((String) messageJson, ChatMessage.class);
+                        return objectMapper.readValue(messageJson, ChatMessage.class);
                     } catch (JsonProcessingException e) {
-                        // 로깅 필요
+                        log.error("최신 메시지를 찾는데 실패했습니다.", e);
                         return null;
                     }
                 })

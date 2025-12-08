@@ -1,6 +1,5 @@
 package com.onetool.server.global.redis.config;
 
-import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.service.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -15,7 +14,6 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
@@ -73,13 +71,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> chatRedisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory3());
+    public RedisTemplate<String, String> chatRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer()); // For List operations
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRoom.class)); // For Hash operations
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer()); // 직렬화 방식 통일
+        redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
     }
 
