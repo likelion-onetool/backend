@@ -2,10 +2,12 @@ package com.onetool.server.global.redis.config;
 
 import com.onetool.server.api.chat.service.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -76,13 +78,14 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer()); // 직렬화 방식 통일
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+    @Profile("!test")
+    public RedisMessageListenerContainer redisContainer(@Qualifier("redisConnectionFactory3") RedisConnectionFactory connectionFactory,
                                                         MessageListenerAdapter messageListener,
                                                         ChannelTopic chatTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -92,11 +95,13 @@ public class RedisConfig {
     }
 
     @Bean
+    @Profile("!test")
     public MessageListenerAdapter messageListener(RedisSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
     @Bean
+    @Profile("!test")
     public ChannelTopic chatTopic() {
         return new ChannelTopic("chat");
     }
