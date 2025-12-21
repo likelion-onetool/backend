@@ -52,6 +52,5 @@ public class ChatController {
     @MessageMapping("/message")
     public void sendMessage(ChatMessage chatMessage) {
         chatService.saveMessage(chatMessage);
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
     }
 }

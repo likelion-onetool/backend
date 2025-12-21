@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.event.MessageSavedEvent;
 import com.onetool.server.api.chat.repository.ChatRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -26,10 +28,9 @@ public class ChatService {
 
     private final ObjectMapper objectMapper;
     private final ChatRepository chatRepository;
-
     private final RedisTemplate<String, String> chatRedisTemplate;
     private HashOperations<String, String, String> opsHashChatRoom;
-    private final ChannelTopic channelTopic;
+    private final ApplicationEventPublisher eventPublisher;
 
     private static final String CHAT_ROOMS = "CHAT_ROOM";
 
@@ -78,16 +79,7 @@ public class ChatService {
     @Transactional
     public void saveMessage(ChatMessage chatMessage) {
         chatRepository.save(chatMessage);
-        try {
-            String messageJson = objectMapper.writeValueAsString(chatMessage);
-            chatRedisTemplate.opsForList().leftPush("chat:room:" + chatMessage.getRoomId(), messageJson);
-            chatRedisTemplate.opsForList().trim("chat:room:" + chatMessage.getRoomId(), 0, 199);
-
-            chatRedisTemplate.convertAndSend(channelTopic.getTopic(), messageJson);
-        } catch (Exception e) {
-            log.error("메시지 직렬화 또는 Redis 처리 중 오류가 발생하여 트랜잭션을 롤백합니다.", e);
-            throw new RuntimeException("메시지 처리 중 오류 발생", e);
-        }
+        eventPublisher.publishEvent(new MessageSavedEvent(chatMessage));
     }
 
     @Transactional(readOnly = true)
